@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinylAppApi", "VinylAppApi\VinylAppApi.csproj", "{DEE1158C-4A6F-4D02-BA19-BE0221DD1475}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinylAppApi.Library", "VinylAppApi.Library\VinylAppApi.Library.csproj", "{260F9DBC-BD16-4907-B8A8-D3B09DD597C7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DEE1158C-4A6F-4D02-BA19-BE0221DD1475}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DEE1158C-4A6F-4D02-BA19-BE0221DD1475}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DEE1158C-4A6F-4D02-BA19-BE0221DD1475}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DEE1158C-4A6F-4D02-BA19-BE0221DD1475}.Release|Any CPU.Build.0 = Release|Any CPU
+		{260F9DBC-BD16-4907-B8A8-D3B09DD597C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{260F9DBC-BD16-4907-B8A8-D3B09DD597C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{260F9DBC-BD16-4907-B8A8-D3B09DD597C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{260F9DBC-BD16-4907-B8A8-D3B09DD597C7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
