@@ -2,24 +2,21 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
-using VinylAppApi.Library.DbModels;
+using VinylAppApi.Library.Managers.DataCoordinationManager;
+using VinylAppApi.Library.Models.DbModels;
 
 namespace VinylAppApi.Library.DbManager
 {
-    public interface IDbAccess
-    {
-        public Task<List<OwnedAlbumModel>> GetAllOwnedAlbumModelsAsync();
-        public Task<OwnedAlbumModel> GetAlbumModelByIdAsync(string id);
-        public Task PostAlbumAsync(OwnedAlbumModelDto userInputAlbum);
-    }
-
     public class DbAccess : IDbAccess
     {
         private readonly IMongoCollection<OwnedAlbumModel> _ownedAlbums;
+        private readonly IMatchUpData _matchUpData;
 
-        public DbAccess(IConfiguration configuration)
+        public DbAccess(IConfiguration configuration, IMatchUpData matchUpData)
         {
             var config = configuration;
+            _matchUpData = matchUpData;
+
             var dbClient = new MongoClient(config.GetConnectionString("MongoDb"));
             var db = dbClient.GetDatabase("vinyl-db");
             _ownedAlbums = db.GetCollection<OwnedAlbumModel>("albums"); 
@@ -41,15 +38,18 @@ namespace VinylAppApi.Library.DbManager
 
         public async Task PostAlbumAsync(OwnedAlbumModelDto userInputAlbum)
         {
-            if(userInputAlbum != null)
-            {
-                await _ownedAlbums.InsertOneAsync(new OwnedAlbumModel
-                {
-                    User = userInputAlbum.User,
-                    Album = userInputAlbum.Album,
-                    Artist = userInputAlbum.Artist
-                });
-            }
+            //var checkIfAblumInDB = await _ownedAlbums.FindAsync(album => album.Album == userInputAlbum.Album);
+
+            var matchedDataAlbum = await _matchUpData.DataMatcher(userInputAlbum);
+
+            await _ownedAlbums.InsertOneAsync(matchedDataAlbum);
+
+            //if (checkIfAblumInDB.ToString() == null)
+            //{
+            //    var matchedDataAlbum =  await _matchUpData.DataMatcher(userInputAlbum);   
+
+            //    await _ownedAlbums.InsertOneAsync(matchedDataAlbum);
+            //}
         }
 
         public async Task UpdateAlbumAsync(string id, OwnedAlbumModelDto userAlbumChanges)

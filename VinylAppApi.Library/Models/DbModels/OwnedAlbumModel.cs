@@ -2,7 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace VinylAppApi.Library.DbModels
+namespace VinylAppApi.Library.Models.DbModels
 {
     public class OwnedAlbumModel
     {

@@ -1,4 +1,4 @@
-﻿namespace VinylAppApi.Library.DbModels
+﻿namespace VinylAppApi.Library.Models.DbModels
 {
     public class OwnedAlbumModelDto
     {

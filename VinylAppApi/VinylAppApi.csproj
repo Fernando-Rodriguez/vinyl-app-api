@@ -6,7 +6,14 @@
     <AssemblyName>VinylAppApi</AssemblyName>
   </PropertyGroup>
 
+  <PropertyGroup Condition=" '$(RunConfiguration)' == 'vinyl_app_api' ">
+    <ExternalConsole>true</ExternalConsole>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\VinylAppApi.Library\VinylAppApi.Library.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.9" />
   </ItemGroup>
 </Project>

@@ -4,6 +4,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using VinylAppApi.Library.DbManager;
+using VinylAppApi.Library.Managers.DataCoordinationManager;
+using VinylAppApi.Library.Models.SpotifyModels.AlbumModels;
+using VinylAppApi.Library.SpotifyApiManager;
 
 namespace VinylAppApi
 {
@@ -20,8 +23,10 @@ namespace VinylAppApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
             services.AddTransient<IDbAccess, DbAccess>();
+            services.AddTransient<ISpotifyRequest, SpotifyRequest>();
+            services.AddTransient<IMatchUpData, MatchUpData>();
+            services.AddSingleton<ITokenManager, TokenManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

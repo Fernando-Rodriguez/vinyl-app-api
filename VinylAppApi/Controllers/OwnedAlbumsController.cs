@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VinylAppApi.Library.DbManager;
-using VinylAppApi.Library.DbModels;
+using VinylAppApi.Library.Models.DbModels;
 
 namespace VinylAppApi.Controllers
 {
@@ -23,9 +23,9 @@ namespace VinylAppApi.Controllers
         [HttpGet]
         public async Task<List<OwnedAlbumModel>> Get()
         {
-            var response = await _dbAccess.GetAllOwnedAlbumModelsAsync();
+            var dbResponse = await _dbAccess.GetAllOwnedAlbumModelsAsync();
 
-            return response;
+            return dbResponse;
         }
 
         [HttpGet("{id}")]
@@ -41,7 +41,5 @@ namespace VinylAppApi.Controllers
         {
             await _dbAccess.PostAlbumAsync(userInput);
         }
-
-        //Added notes
     }
 }
