@@ -17,9 +17,5 @@ namespace VinylAppApi.Library.Models.AuthorizationModels
         [BsonElement("user_secret")]
         [Required]
         public string UserSecret { get; set; }
-
-        [BsonElement("user_role")]
-        [Required]
-        public string UserRole { get; set; }
     }
 }
