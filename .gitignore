@@ -351,3 +351,7 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+.DS_Store
+TestApp/appsettings.json
+VinylAppApi/appsettings.Development.json
+VinylAppApi/appsettings.json
