@@ -8,8 +8,8 @@ using VinylAppApi.Library.Models.DbModels;
 
 namespace VinylAppApi.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
+    [Authorize]
     public class OwnedAlbumsController : Controller
     {
         private readonly IDbAccess _dbAccess;

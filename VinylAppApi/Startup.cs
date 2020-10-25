@@ -42,7 +42,6 @@ namespace VinylAppApi
                 };
             });
 
-
             services.AddControllers();
             services.AddTransient<IDbAccess, DbAccess>();
             services.AddTransient<ISpotifyRequest, SpotifyRequest>();
@@ -65,9 +64,10 @@ namespace VinylAppApi
 
             app.UseRouting();
 
-            app.UseAuthorization();
 
             app.UseAuthentication();
+
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
