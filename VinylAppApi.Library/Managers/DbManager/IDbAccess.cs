@@ -9,5 +9,6 @@ namespace VinylAppApi.Library.DbManager
         public Task<List<OwnedAlbumModel>> GetAllOwnedAlbumModelsAsync();
         public Task<OwnedAlbumModel> GetAlbumModelByIdAsync(string id);
         public Task PostAlbumAsync(OwnedAlbumModelDto userInputAlbum);
+        public bool QueryUser(string userName, string userPassword);
     }
 }

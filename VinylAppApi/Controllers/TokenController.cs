@@ -7,19 +7,11 @@ namespace VinylAppApi.Controllers
     [Route("api/[controller]")]
     public class TokenController : Controller
     {
-        private IAuthContainerModel _authModel;
         private IAuthorizationVerification _verify;
 
-        public TokenController(IAuthContainerModel authModel, IAuthorizationVerification verify)
+        public TokenController(IAuthorizationVerification verify)
         {
-            _authModel = authModel;
             _verify = verify;
-        }
-
-        [HttpGet]
-        public string Get()
-        {
-            return null;
         }
 
         [HttpPost]
