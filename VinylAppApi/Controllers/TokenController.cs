@@ -19,7 +19,8 @@ namespace VinylAppApi.Controllers
         {
             //verify that those two fields are good then...
 
-            var tokenResponse = _verify.UserVerifcationWithIdAndSecret(requestTokenInfo.ClientName, requestTokenInfo.ClientSecret);
+            var tokenResponse = _verify
+                .UserVerifcationWithIdAndSecret(requestTokenInfo.ClientName, requestTokenInfo.ClientSecret);
 
             return tokenResponse;
         }
