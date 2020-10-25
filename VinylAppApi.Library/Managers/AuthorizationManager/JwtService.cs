@@ -4,22 +4,25 @@ using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using VinylAppApi.Library.Models.AuthorizationModels;
-
+using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace VinylAppApi.Library.AuthorizationManager
 {
     public class JwtService : IAuthService
     {
         public string SecretKey { get; set; }
+        private IConfiguration _config;
 
-        public JwtService(string secretKey)
+        public JwtService(IConfiguration config)
         {
-            SecretKey = secretKey;
+            _config = config;
+            SecretKey = _config.GetSection("ServerCredentials").ToString();
         }
 
         public IEnumerable<Claim> GetTokenClaims(string token)
         {
-            if (String.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(token))
             {
                 throw new ArgumentException("Token is null or empty");
             }
@@ -43,7 +46,7 @@ namespace VinylAppApi.Library.AuthorizationManager
 
         public bool IsTokenValid(string token)
         {
-            if (String.IsNullOrEmpty(token))
+            if (string.IsNullOrEmpty(token))
             {
                 throw new ArgumentException("given token is null or empty");
             }
@@ -74,6 +77,8 @@ namespace VinylAppApi.Library.AuthorizationManager
             SecurityTokenDescriptor securityTokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(model.Claims),
+                //Issuer = "familyvinylapp",
+                NotBefore = DateTime.UtcNow,
                 Expires = DateTime.UtcNow.AddMinutes(Convert.ToInt32(model.ExpireMinutes)),
                 SigningCredentials = new SigningCredentials(GetSymmetricSecurityKey(), model.SecurityAlgorithm)
             };
@@ -92,7 +97,7 @@ namespace VinylAppApi.Library.AuthorizationManager
 
         private SecurityKey GetSymmetricSecurityKey()
         {
-            byte[] symmetricKey = Convert.FromBase64String(SecretKey);
+            byte[] symmetricKey = Encoding.UTF8.GetBytes(SecretKey);
 
             return new SymmetricSecurityKey(symmetricKey);
         }
@@ -104,18 +109,6 @@ namespace VinylAppApi.Library.AuthorizationManager
                 ValidateIssuer = false,
                 ValidateAudience = false,
                 IssuerSigningKey = GetSymmetricSecurityKey()
-            };
-        }
-
-        public JwtContainerModel GetJwtContainerModel(string name, string email)
-        {
-            return new JwtContainerModel
-            {
-                Claims = new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, name),
-                    new Claim(ClaimTypes.Email, email)
-                }
             };
         }
     }

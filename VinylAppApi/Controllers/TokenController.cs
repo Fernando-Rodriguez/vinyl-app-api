@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using VinylAppApi.Library.DbManager;
+﻿using Microsoft.AspNetCore.Mvc;
+using VinylAppApi.Library.Managers.AuthorizationManager;
 using VinylAppApi.Library.Models.AuthorizationModels;
 
 namespace VinylAppApi.Controllers
@@ -10,8 +7,13 @@ namespace VinylAppApi.Controllers
     [Route("api/[controller]")]
     public class TokenController : Controller
     {
-        public TokenController()
+        private IAuthContainerModel _authModel;
+        private IAuthorizationVerification _verify;
+
+        public TokenController(IAuthContainerModel authModel, IAuthorizationVerification verify)
         {
+            _authModel = authModel;
+            _verify = verify;
         }
 
         [HttpGet]
@@ -21,15 +23,13 @@ namespace VinylAppApi.Controllers
         }
 
         [HttpPost]
-        public async Task Post([FromBody] TokenRequestDTO requestTokenInfo)
+        public object Post([FromBody] TokenRequestDTO requestTokenInfo)
         {
-            string testClientName = "";
-            string testClientSecret = "";
+            //verify that those two fields are good then...
 
-            //checks if the tokens are legit.
+            var tokenResponse = _verify.UserVerifcationWithIdAndSecret(requestTokenInfo.ClientName, requestTokenInfo.ClientSecret);
 
-
-
+            return tokenResponse;
         }
     }
 }

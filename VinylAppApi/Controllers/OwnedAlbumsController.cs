@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VinylAppApi.Library.DbManager;
@@ -7,6 +8,7 @@ using VinylAppApi.Library.Models.DbModels;
 
 namespace VinylAppApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     public class OwnedAlbumsController : Controller
     {
