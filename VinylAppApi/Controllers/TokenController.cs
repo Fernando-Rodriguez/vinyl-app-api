@@ -2,6 +2,14 @@
 using VinylAppApi.Library.Managers.AuthorizationManager;
 using VinylAppApi.Library.Models.AuthorizationModels;
 
+//---------------------------//     
+//                           //
+//         ( ͡° ͜ʖ ͡°)          // 
+//                           //
+// Author: Fernando          //
+// Project: Family Vinyl Api //
+//---------------------------//
+
 namespace VinylAppApi.Controllers
 {
     [Route("api/[controller]")]

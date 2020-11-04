@@ -6,6 +6,15 @@ using Microsoft.Extensions.Logging;
 using VinylAppApi.Library.DbManager;
 using VinylAppApi.Library.Models.DbModels;
 
+//---------------------------//     
+//                           //
+//         ( ͡° ͜ʖ ͡°)          // 
+//                           //
+// Author: Fernando          //
+// Project: Family Vinyl Api //
+//---------------------------//
+
+
 namespace VinylAppApi.Controllers
 {
     [Route("api/[controller]")]
@@ -21,6 +30,8 @@ namespace VinylAppApi.Controllers
             _logger = logger;
             _dbAccess = dbAccess;
         }
+
+
 
         [HttpGet]
         public async Task<List<OwnedAlbumModel>> Get()
