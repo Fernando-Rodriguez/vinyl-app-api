@@ -10,7 +10,17 @@
     <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\VinylAppApi.Library\VinylAppApi.Library.csproj" />
+    <ProjectReference Include="..\VinylAppApi.Shared\VinylAppApi.Shared.csproj" />
+    <ProjectReference Include="..\VinylAppApi.SpotifyHandler\VinylAppApi.SpotifyHandler.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\VinylAppApi.DataAccess\VinylAppApi.DataAccess.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+      <ReferenceSourceTarget></ReferenceSourceTarget>
+    </ProjectReference>
+    <ProjectReference Include="..\VinylAppApi.Authorization\VinylAppApi.Authorization.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />

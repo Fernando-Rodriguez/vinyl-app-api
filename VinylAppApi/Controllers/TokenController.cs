@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using VinylAppApi.Library.Managers.AuthorizationManager;
-using VinylAppApi.Library.Models.AuthorizationModels;
+using VinylAppApi.Authorization.AuthorizationManager;
+using VinylAppApi.Shared.Models.AuthorizationModels;
 
 //---------------------------//     
 //                           //
@@ -28,7 +28,9 @@ namespace VinylAppApi.Controllers
             //verify that those two fields are good then...
 
             var tokenResponse = _verify
-                .UserVerifcationWithIdAndSecret(requestTokenInfo.ClientName, requestTokenInfo.ClientSecret);
+                .UserVerifcationWithIdAndSecret(
+                requestTokenInfo.ClientName,
+                requestTokenInfo.ClientSecret);
 
             return tokenResponse;
         }

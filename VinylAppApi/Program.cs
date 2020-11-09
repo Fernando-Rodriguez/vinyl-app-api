@@ -1,5 +1,15 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
+
+//---------------------------//     
+//                           //
+//         ( ͡° ͜ʖ ͡°)          // 
+//                           //
+// Author: Fernando          //
+// Project: Family Vinyl Api //
+//---------------------------//
 
 namespace VinylAppApi
 {
@@ -12,6 +22,11 @@ namespace VinylAppApi
 
         private static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                .ConfigureLogging((context, logging) =>
+                {
+                    logging.AddConsole();
+                    logging.AddDebug();
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

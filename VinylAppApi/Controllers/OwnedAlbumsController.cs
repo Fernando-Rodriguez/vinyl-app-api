@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.Library.DbManager;
-using VinylAppApi.Library.Models.DbModels;
+using VinylAppApi.DataAccess.DbManager;
+using VinylAppApi.Shared.Models.DbModels;
 
 //---------------------------//     
 //                           //
@@ -13,7 +13,6 @@ using VinylAppApi.Library.Models.DbModels;
 // Author: Fernando          //
 // Project: Family Vinyl Api //
 //---------------------------//
-
 
 namespace VinylAppApi.Controllers
 {
@@ -31,20 +30,22 @@ namespace VinylAppApi.Controllers
             _dbAccess = dbAccess;
         }
 
-
-
         [HttpGet]
         public async Task<List<OwnedAlbumModel>> Get()
         {
             var dbResponse = await _dbAccess.GetAllOwnedAlbumModelsAsync();
 
+            _logger.LogDebug("OwnedAlbums has been called");
+
             return dbResponse;
         }
 
         [HttpGet("{id}")]
-        public async Task<OwnedAlbumModel> Get(string id)
+        public async Task<OwnedAlbumModel> Get([FromBody] string userId, string id)
         {
-            var response = await _dbAccess.GetAlbumModelByIdAsync(id);
+            var response = await _dbAccess.GetAlbumModelByIdAsync(userId, id);
+
+            _logger.LogDebug("OwnedAlbums has been called");
 
             return response;
         }
@@ -52,7 +53,9 @@ namespace VinylAppApi.Controllers
         [HttpPost]
         public async Task Post([FromBody] OwnedAlbumModelDto userInput)
         {
-            await _dbAccess.PostAlbumAsync(userInput);
+            await _dbAccess.PostAlbumAsync(userInput.UserId, userInput);
+
+            _logger.LogDebug("OwnedAlbums has been called");
         }
     }
 }

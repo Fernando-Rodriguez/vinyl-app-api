@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="DataCoordinationManager\" />
+    <Folder Include="DbManager\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\VinylAppApi.SpotifyHandler\VinylAppApi.SpotifyHandler.csproj" />
+    <ProjectReference Include="..\VinylAppApi.Shared\VinylAppApi.Shared.csproj" />
+  </ItemGroup>
+</Project>

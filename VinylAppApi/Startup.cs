@@ -5,14 +5,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using VinylAppApi.Library.AuthorizationManager;
-using VinylAppApi.Library.DbManager;
-using VinylAppApi.Library.Managers.AuthorizationManager;
-using VinylAppApi.Library.Managers.DataCoordinationManager;
-using VinylAppApi.Library.Models.AuthorizationModels;
-using VinylAppApi.Library.SpotifyApiManager;
+using VinylAppApi.Authorization.AuthorizationManager;
+using VinylAppApi.DataAccess.DbManager;
+using VinylAppApi.DataAccess.DataCoordinationManager;
+using VinylAppApi.Shared.Models.AuthorizationModels;
+using VinylAppApi.SpotifyHandler.SpotifyApiManager;
 
-
+//---------------------------//     
+//                           //
+//         ( ͡° ͜ʖ ͡°)          // 
+//                           //
+// Author: Fernando          //
+// Project: Family Vinyl Api //
+//---------------------------//
 
 namespace VinylAppApi
 {
@@ -30,7 +35,8 @@ namespace VinylAppApi
         {
             services.AddAuthentication("OAuth").AddJwtBearer("OAuth", opts =>
             {
-                byte[] symmetricKey = Encoding.UTF8.GetBytes(Configuration.GetSection("ServerCredentials").ToString());
+                byte[] symmetricKey = Encoding.UTF8
+                .GetBytes(Configuration.GetSection("ServerCredentials").ToString());
 
                 var key =  new SymmetricSecurityKey(symmetricKey);
 
@@ -63,7 +69,6 @@ namespace VinylAppApi
             app.UseHttpsRedirection();
 
             app.UseRouting();
-
 
             app.UseAuthentication();
 
