@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VinylAppApi.Shared.Models.SpotifyModels;
 using VinylAppApi.Shared.Models.SpotifyModels.AlbumModels;
-using System.Linq;
 
 namespace VinylAppApi.SpotifyHandler.SpotifyApiManager
 {
@@ -35,9 +34,6 @@ namespace VinylAppApi.SpotifyHandler.SpotifyApiManager
             requestMessage.Headers.Add("Authorization", $"Bearer {_tokenManager._pToken}");
 
             var response = await _client.SendAsync(requestMessage);
-
-            Console.WriteLine("Got here");
-            Console.WriteLine(response.StatusCode);
 
             var albumJson = await response.Content.ReadAsStringAsync();
 

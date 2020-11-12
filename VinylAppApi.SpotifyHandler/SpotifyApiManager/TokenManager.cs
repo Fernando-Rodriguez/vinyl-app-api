@@ -27,11 +27,8 @@ namespace VinylAppApi.SpotifyHandler.SpotifyApiManager
         {
             string baseAddress = @"https://accounts.spotify.com/api/token";
 
-            //string clientId = _config.GetSection("Credentials").GetSection("Client_Id").ToString();
-            string clientId = "2465203c97874256b431d1c4ff1a0ee8";
-            //string clientSecret = _config.GetSection("Credentials").GetSection("Client_Secret").ToString();
-
-            string clientSecret = "aae2cbca71dd48d59c157ce016904846";
+            string clientId = _config.GetSection("Client_Id").Value.ToString();
+            string clientSecret = _config.GetSection("Client_Secret").Value.ToString();
             string credentials = $"{clientId}:{clientSecret}";
 
             using (var client = new HttpClient())
