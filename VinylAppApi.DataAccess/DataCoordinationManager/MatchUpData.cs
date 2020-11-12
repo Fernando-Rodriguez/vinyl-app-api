@@ -1,18 +1,21 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using VinylAppApi.Shared.Models.DbModels;
-using VinylAppApi.Shared.Models.SpotifyModels.AlbumModels;
 using VinylAppApi.SpotifyHandler.SpotifyApiManager;
 
 namespace VinylAppApi.DataAccess.DataCoordinationManager
 {
     public class MatchUpData : IMatchUpData
     {
-        public ISpotifyRequest _spotifyRequest;
+        private ISpotifyRequest _spotifyRequest;
+        private ILogger<MatchUpData> _logger; 
 
-        public MatchUpData(ISpotifyRequest spotifyRequest)
+        public MatchUpData(ILogger<MatchUpData> logger, ISpotifyRequest spotifyRequest)
         {
             _spotifyRequest = spotifyRequest;
+            _logger = logger;
         }
 
         public async Task<OwnedAlbumModel> DataMatcher(OwnedAlbumModelDto albumModelDTO)
@@ -21,21 +24,35 @@ namespace VinylAppApi.DataAccess.DataCoordinationManager
 
             var spotifyRes = await _spotifyRequest.SpotifySearchManager(searchAlbum);
 
-            var imageUrl = spotifyRes
-                .albums
-                .items
+            var mainOutModel = new OwnedAlbumModel();
+
+            var spotifyFilter = spotifyRes
+                 .albums
+                 .items
+                 .Where(a => a.artists
+                     .First()
+                     .name == albumModelDTO.Artist)
+                 .ToList();
+
+            var imageUrl = spotifyFilter
                 .Select(a => a.images)
                 .FirstOrDefault()
                 .FirstOrDefault()
                 .url;
 
-            return new OwnedAlbumModel
+            var outputModel = new OwnedAlbumModel
             {
                 User = albumModelDTO.User,
                 Album = albumModelDTO.Album,
                 Artist = albumModelDTO.Artist,
                 ImageUrl = imageUrl
             };
+
+            mainOutModel = outputModel;
+
+            _logger.LogDebug($"Model: {outputModel.Artist} - {outputModel.Album} successfully uploaded.");
+
+            return mainOutModel;
         }
     }
 }

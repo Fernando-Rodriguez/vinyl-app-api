@@ -6,6 +6,7 @@ using VinylAppApi.DataAccess.DataCoordinationManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
 using VinylAppApi.Shared.Models.DbModels;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace VinylAppApi.DataAccess.DbManager
 {
@@ -16,16 +17,16 @@ namespace VinylAppApi.DataAccess.DbManager
     /// </summary>
     public class DbAccess : IDbAccess
     {
-        
         private readonly IMongoCollection<OwnedAlbumModel> _ownedAlbums;
         private readonly IMongoCollection<UserModel> _databaseUser;
         private readonly IMatchUpData _matchUpData;
+        private ILogger<DbAccess> _logger;
 
-        public DbAccess(IConfiguration configuration, IMatchUpData matchUpData)
+        public DbAccess(ILogger<DbAccess> logger, IConfiguration configuration, IMatchUpData matchUpData)
         {
             var config = configuration;
-
             _matchUpData = matchUpData;
+            _logger = logger;
 
             var dbClient = new MongoClient(config.GetConnectionString("MongoDb"));
             var db = dbClient.GetDatabase("vinyl-db");
@@ -40,10 +41,12 @@ namespace VinylAppApi.DataAccess.DbManager
 
             var response = await _ownedAlbums.FindAsync(user => true);
 
+            _logger.LogDebug("<------ All Albums Returned ------>");
+
             return response.ToList();
         }
 
-        public async Task<OwnedAlbumModel> GetAlbumModelByIdAsync(string userId, string id)
+        public async Task<OwnedAlbumModel> GetAlbumModelByIdAsync(string userId,string id)
         {
             var userDbRes = (await _databaseUser
                 .FindAsync(user => user.Id == userId))
@@ -55,39 +58,76 @@ namespace VinylAppApi.DataAccess.DbManager
                 .Where(album => album.Id == id)
                 .FirstOrDefault();
 
+            _logger.LogDebug("<------ Id Albums Returned ------>");
+
             return albumDbRes;
         }
 
-        public async Task PostAlbumAsync(string userId, OwnedAlbumModelDto userInputAlbum)
+        public async Task PostAlbumAsync(OwnedAlbumModelDto userInputAlbum)
         {
-            var checkIfAblumInDB = _ownedAlbums.Find(album => album.Album == userInputAlbum.Album);
+            var checkIfAblumInDB = await _ownedAlbums.FindAsync(album => album.Album == userInputAlbum.Album);
 
-            if (checkIfAblumInDB.CountDocuments() == 0)
+            var albumsChecked = checkIfAblumInDB.ToList();
+
+            if (albumsChecked.Count() == 0)
             {
-                var matchedDataAlbum = await _matchUpData.DataMatcher(userInputAlbum);
-
-                await _ownedAlbums.InsertOneAsync(matchedDataAlbum);
+                try
+                {
+                    var matchedDataAlbum = await _matchUpData.DataMatcher(userInputAlbum);
+                    await _ownedAlbums.InsertOneAsync(matchedDataAlbum);
+                }
+                catch
+                {
+                    _logger.LogInformation("<------- Error Posting Album ------->");
+                }   
+            }
+            else
+            {
+                _logger.LogDebug("<------ Error Posting Album ------>");
             }
         }
 
         public async Task UpdateAlbumAsync(string userId, string id, OwnedAlbumModelDto userAlbumChanges)
         {
-            await _ownedAlbums.ReplaceOneAsync(album => album.Id == id, new OwnedAlbumModel()
+            var checkIfAlbumInDb = (await _ownedAlbums.FindAsync(album => album.Id == id)).ToList();
+
+            if (checkIfAlbumInDb.Count() != 0)
             {
-                User = userAlbumChanges.User,
-                Album = userAlbumChanges.Album,
-                Artist = userAlbumChanges.Artist
-            });
+                await _ownedAlbums.ReplaceOneAsync(album => album.Id == id, new OwnedAlbumModel()
+                {
+                    User = userAlbumChanges.User,
+                    Album = userAlbumChanges.Album,
+                    Artist = userAlbumChanges.Artist
+                });
+            }
+
+            _logger.LogDebug("<------ Update Albums Success ------>");
+
         }
 
         public async Task DeleteAlbumByIdAsync(string userId, string id)
         {
-            await _ownedAlbums.DeleteOneAsync(album => album.Id == id);
+            var checkIfAlbumInDb = (await _ownedAlbums.FindAsync(album => album.Id == id)).ToList();
+
+            if (checkIfAlbumInDb.Count() != 0)
+            {
+                await _ownedAlbums.DeleteOneAsync(album => album.Id == id);
+            }
+
+            _logger.LogDebug("<------ Deleted Albums Success ------>");
         }
 
         public async Task DeleteAlbumByAlbumNameAsync(string userId, OwnedAlbumModelDto userAlbumToDelete)
         {
-            await _ownedAlbums.DeleteOneAsync(album => album.Album == userAlbumToDelete.Album);
+            var checkIfAlbumInDb = (await _ownedAlbums.FindAsync(album => album.Album == userAlbumToDelete.Album)).ToList();
+
+            if (checkIfAlbumInDb.Count() != 0)
+            {
+                await _ownedAlbums.DeleteOneAsync(album => album.Album == userAlbumToDelete.Album);
+            }
+
+            _logger.LogDebug("<------ Deleted Albums By Id Success ------>");
+
         }
 
         public bool QueryUser(string userName, string userPassword)

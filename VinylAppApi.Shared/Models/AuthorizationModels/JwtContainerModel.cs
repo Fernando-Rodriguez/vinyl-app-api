@@ -16,7 +16,7 @@ namespace VinylAppApi.Shared.Models.AuthorizationModels
         
         public string SecretKey => _config.GetSection("ServerCredentials").ToString();
         public string SecurityAlgorithm { get; set; } = SecurityAlgorithms.HmacSha256Signature;
-        public int ExpireMinutes { get; set; } = 5;
+        public int ExpireMinutes { get; set; } = 60;
         public Claim[] Claims { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using VinylAppApi.Shared.Models.SpotifyModels;
 using VinylAppApi.Shared.Models.SpotifyModels.AlbumModels;
+using System.Linq;
 
 namespace VinylAppApi.SpotifyHandler.SpotifyApiManager
 {
@@ -19,11 +20,13 @@ namespace VinylAppApi.SpotifyHandler.SpotifyApiManager
 
         private async Task<HttpResponseMessage> Search(string searchAlbum)
         {
+            string searchType = "album";
+
             var _client = new HttpClient();
 
             var builder = new UriBuilder("https://api.spotify.com/v1/search");
 
-            builder.Query = $"q={searchAlbum}&type=album&market=US&limit=1";
+            builder.Query = $"q={searchAlbum}&type={searchType}&limit=5";
 
             string baseUrl = builder.ToString();
 
