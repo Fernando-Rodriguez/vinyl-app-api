@@ -74,6 +74,8 @@ namespace VinylAppApi
 
             app.UseAuthorization();
 
+            app.UseCors("AllowAnyOrigin");
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
