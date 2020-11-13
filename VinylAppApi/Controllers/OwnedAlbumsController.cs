@@ -31,13 +31,18 @@ namespace VinylAppApi.Controllers
         }
 
         [HttpGet]
-        public async Task<List<OwnedAlbumModel>> Get()
+        public async Task<object> Get()
         {
             var dbResponse = await _dbAccess.GetAllOwnedAlbumModelsAsync();
 
             _logger.LogDebug("OwnedAlbums has been called");
 
-            return dbResponse;
+            var albums = new List<OwnedAlbumModel>();
+
+            return new
+            {
+                albums = dbResponse
+            };
         }
 
         [HttpGet("{id}")]
