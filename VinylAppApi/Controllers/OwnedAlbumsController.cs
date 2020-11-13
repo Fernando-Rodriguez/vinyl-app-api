@@ -31,7 +31,7 @@ namespace VinylAppApi.Controllers
         }
 
         [HttpGet]
-        public async Task<object> Get()
+        public async Task<Albums> Get()
         {
             var dbResponse = await _dbAccess.GetAllOwnedAlbumModelsAsync();
 
@@ -39,10 +39,10 @@ namespace VinylAppApi.Controllers
 
             var albums = new List<OwnedAlbumModel>();
 
-            return new
+            return new Albums
             {
-                albums = dbResponse
-            };
+                Owned_Albums = dbResponse
+            }
         }
 
         [HttpGet("{id}")]
