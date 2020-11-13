@@ -42,7 +42,7 @@ namespace VinylAppApi.Controllers
             return new Albums
             {
                 Owned_Albums = dbResponse
-            }
+            };
         }
 
         [HttpGet("{id}")]
