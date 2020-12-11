@@ -29,9 +29,7 @@ namespace VinylAppApi.DataAccess.DataCoordinationManager
             var spotifyFilter = spotifyRes
                  .albums
                  .items
-                 .Where(a => a.artists
-                     .First()
-                     .name == albumModelDTO.Artist)
+                 .Where(a => a.artists.First().name.ToLower() == albumModelDTO.Artist.ToLower())
                  .ToList();
 
             var imageUrl = spotifyFilter
