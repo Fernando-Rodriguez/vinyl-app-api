@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using VinylAppApi.Shared.Models.SpotifyModels;
 using VinylAppApi.Shared.Models.SpotifyModels.AlbumModels;
@@ -10,11 +11,13 @@ namespace VinylAppApi.SpotifyHandler.SpotifyApiManager
     public class SpotifyRequest : ISpotifyRequest
     {
         private ITokenManager _tokenManager;
+        private ILogger _logger;
         public AlbumModel QueryModel { get; set; }
 
-        public SpotifyRequest(ITokenManager tokenManager)
+        public SpotifyRequest(ITokenManager tokenManager, ILogger<SpotifyRequest> logger)
         {
             _tokenManager = tokenManager;
+            _logger = logger;
         }
 
         private async Task<HttpResponseMessage> Search(string searchAlbum)
@@ -22,7 +25,6 @@ namespace VinylAppApi.SpotifyHandler.SpotifyApiManager
             string searchType = "album";
 
             var _client = new HttpClient();
-
             var builder = new UriBuilder("https://api.spotify.com/v1/search");
 
             builder.Query = $"q={searchAlbum}&type={searchType}&limit=5";
@@ -47,15 +49,17 @@ namespace VinylAppApi.SpotifyHandler.SpotifyApiManager
 
         public async Task<AlbumModel> SpotifySearchManager(string searchAlbum)
         {
-            if (String.IsNullOrEmpty(_tokenManager._pToken))
+            if (string.IsNullOrEmpty(_tokenManager._pToken))
             {
-                var x = 0;
-
-                while (x < 1)
+                try
                 {
                     await _tokenManager.TestContact();
-                    x++;
                 }
+                catch (Exception e)
+                {
+                    _logger.LogDebug($"Error {e} at Token Gen.");
+                }
+
             }
 
             var response = await Search(searchAlbum);
@@ -66,14 +70,8 @@ namespace VinylAppApi.SpotifyHandler.SpotifyApiManager
             }
             else
             {
-                var x = 0;
-                while (x < 1)
-                {
-                    await _tokenManager.TestContact();
-                    await Search(searchAlbum);
-                    x++;
-                }
-
+                _logger.LogDebug($"Error with the token");
+                
                 return new SpotifyErrorModel()
                     .CreateAlbumError();
             }

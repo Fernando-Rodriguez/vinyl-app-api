@@ -1,6 +1,8 @@
 ﻿using System.Security.Claims;
 using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
+using BCrypt.Net;
+using System;
 
 namespace VinylAppApi.Authorization.AuthorizationManager
 {
@@ -22,7 +24,12 @@ namespace VinylAppApi.Authorization.AuthorizationManager
         public object UserVerifcationWithIdAndSecret(string userId, string userSecret)
         {
 
-            var userCheckBool = _dbAccess.QueryUser(userId, userSecret);
+            var passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(userSecret);
+
+            Console.WriteLine(passwordHash);
+
+            var userCheckBool = _dbAccess.QueryUser(userId, passwordHash);
+
 
             if(userCheckBool == true)
             {
