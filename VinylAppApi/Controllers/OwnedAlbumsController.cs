@@ -16,7 +16,7 @@ using VinylAppApi.Shared.Models.DbModels;
 
 namespace VinylAppApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/api/[controller]")]
     [Authorize]
     public class OwnedAlbumsController : Controller
     {

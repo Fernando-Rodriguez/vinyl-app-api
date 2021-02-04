@@ -11,4 +11,7 @@
     <ProjectReference Include="..\VinylAppApi.DataAccess\VinylAppApi.DataAccess.csproj" />
     <ProjectReference Include="..\VinylAppApi.Shared\VinylAppApi.Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+  </ItemGroup>
 </Project>

@@ -12,7 +12,7 @@ using VinylAppApi.Shared.Models.AuthorizationModels;
 
 namespace VinylAppApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("v1/api/[controller]")]
     public class TokenController : Controller
     {
         private IAuthorizationVerification _verify;

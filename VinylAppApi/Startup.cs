@@ -11,14 +11,6 @@ using VinylAppApi.DataAccess.DataCoordinationManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
 using VinylAppApi.SpotifyHandler.SpotifyApiManager;
 
-//---------------------------//     
-//                           //
-//         ( ͡° ͜ʖ ͡°)          // 
-//                           //
-// Author: Fernando          //
-// Project: Family Vinyl Api //
-//---------------------------//
-
 namespace VinylAppApi
 {
     public class Startup
@@ -48,6 +40,7 @@ namespace VinylAppApi
                 };
             });
 
+            services.AddSwaggerGen();
             services.AddControllers();
             services.AddTransient<IDbAccess, DbAccess>();
             services.AddTransient<ISpotifyRequest, SpotifyRequest>();
@@ -65,6 +58,14 @@ namespace VinylAppApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                c.RoutePrefix = string.Empty;
+            });
 
             app.UseHttpsRedirection();
 
