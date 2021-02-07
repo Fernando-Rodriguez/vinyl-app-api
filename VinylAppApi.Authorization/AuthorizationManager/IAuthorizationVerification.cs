@@ -1,7 +1,9 @@
-﻿namespace VinylAppApi.Authorization.AuthorizationManager
+﻿using System.Threading.Tasks;
+
+namespace VinylAppApi.Authorization.AuthorizationManager
 {
     public interface IAuthorizationVerification
     {
-        object UserVerifcationWithIdAndSecret(string userId, string userSecret);
+        Task<object> UserVerifcationWithIdAndSecret(string userId, string userSecret);
     }
 }

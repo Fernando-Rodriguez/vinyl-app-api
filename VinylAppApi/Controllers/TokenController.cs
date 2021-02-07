@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using VinylAppApi.Authorization.AuthorizationManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
 
@@ -23,14 +24,15 @@ namespace VinylAppApi.Controllers
         }
 
         [HttpPost]
-        public object Post([FromBody] TokenRequestDTO requestTokenInfo)
+        public async Task<object> Post([FromBody] TokenRequestDTO requestTokenInfo)
         {
             //verify that those two fields are good then...
 
-            var tokenResponse = _verify
+            var tokenResponse = await _verify
                 .UserVerifcationWithIdAndSecret(
-                requestTokenInfo.ClientName,
-                requestTokenInfo.ClientSecret);
+                    requestTokenInfo.ClientName,
+                    requestTokenInfo.ClientSecret
+                );
 
             return tokenResponse;
         }

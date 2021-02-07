@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace VinylAppApi.Shared.Models.SpotifyModels.AlbumModels
+﻿namespace VinylAppApi.Shared.Models.SpotifyModels.AlbumModels
 {
     public class AlbumModel
     {

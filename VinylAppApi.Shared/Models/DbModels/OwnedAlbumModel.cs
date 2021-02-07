@@ -24,5 +24,8 @@ namespace VinylAppApi.Shared.Models.DbModels
         
         [BsonElement("image_url")] 
         public string ImageUrl { get; set; }
+
+        [BsonElement("rating")]
+        public int Rating { get; set; }
     }
 }

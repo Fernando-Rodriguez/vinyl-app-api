@@ -37,8 +37,6 @@ namespace VinylAppApi.Controllers
 
             _logger.LogDebug("OwnedAlbums has been called");
 
-            var albums = new List<OwnedAlbumModel>();
-
             return new Albums
             {
                 Owned_Albums = dbResponse

@@ -12,4 +12,8 @@
     <ProjectReference Include="..\VinylAppApi.SpotifyHandler\VinylAppApi.SpotifyHandler.csproj" />
     <ProjectReference Include="..\VinylAppApi.Shared\VinylAppApi.Shared.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.12.0-beta1" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+  </ItemGroup>
 </Project>

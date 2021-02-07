@@ -7,6 +7,8 @@ using VinylAppApi.Shared.Models.AuthorizationModels;
 using VinylAppApi.Shared.Models.DbModels;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using System;
+using BC = BCrypt.Net.BCrypt;
 
 namespace VinylAppApi.DataAccess.DbManager
 {
@@ -31,7 +33,6 @@ namespace VinylAppApi.DataAccess.DbManager
             var dbClient = new MongoClient(config.GetConnectionString("MongoDb"));
             var db = dbClient.GetDatabase("vinyl-db");
             _ownedAlbums = db.GetCollection<OwnedAlbumModel>("albums");
-
             _databaseUser = db.GetCollection<UserModel>("users");
         }
 
@@ -46,7 +47,14 @@ namespace VinylAppApi.DataAccess.DbManager
             return response.ToList();
         }
 
-        public async Task<OwnedAlbumModel> GetAlbumModelByIdAsync(string userId,string id)
+        public async Task<List<OwnedAlbumModel>> GetAlbumByUserId(string userId)
+        {
+            var albumByUserIdList = await _ownedAlbums.FindAsync(album => album.User == userId);
+
+            return albumByUserIdList.ToList();
+        }
+
+        public async Task<OwnedAlbumModel> GetAlbumModelByIdAsync(string userId, string id)
         {
             var userDbRes = (await _databaseUser
                 .FindAsync(user => user.Id == userId))
@@ -130,18 +138,45 @@ namespace VinylAppApi.DataAccess.DbManager
 
         }
 
-        public bool QueryUser(string userName, string userPassword)
+        public async Task<UserModel> QueryUser(string userName, string userPassword)
         {
-            var userQuery = _databaseUser.Find(user => user.UserName == userName);
 
-            if (userQuery.CountDocuments() != 0)
+            var errorModel = new UserModel
             {
-                return true;
+                Id = "",
+                UserName = "",
+                UserSecret = "",
+                UserRole = ""
+            };
+
+            var userQuery = (await _databaseUser.FindAsync(user => user.UserName == userName)).ToList().First();
+
+            string hashed = userQuery.UserSecret;
+
+            if (userQuery != null)
+            {
+                var isVerified = BC.Verify(userPassword, hashed);
+
+                if (isVerified)
+                {
+                    return userQuery;
+                }
+                else
+                {
+                    return errorModel;
+                }
             }
             else
             {
-                return false;
+                return errorModel;
             }
+        }
+
+        public async Task<UserModel> QueryUserByName(string userName)
+        {
+            var userQueryName = await _databaseUser.FindAsync(user => user.UserName == userName);
+
+            return userQueryName.First();
         }
     }
 }

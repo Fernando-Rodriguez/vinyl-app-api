@@ -10,6 +10,7 @@ using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.DataAccess.DataCoordinationManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
 using VinylAppApi.SpotifyHandler.SpotifyApiManager;
+using Newtonsoft.Json;
 
 namespace VinylAppApi
 {

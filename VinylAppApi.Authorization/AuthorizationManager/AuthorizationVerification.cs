@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
-using BCrypt.Net;
 using System;
+using System.Threading.Tasks;
 
 namespace VinylAppApi.Authorization.AuthorizationManager
 {
@@ -21,22 +21,15 @@ namespace VinylAppApi.Authorization.AuthorizationManager
             _dbAccess = dbAccess;
         }
 
-        public object UserVerifcationWithIdAndSecret(string userId, string userSecret)
+        public async Task<object> UserVerifcationWithIdAndSecret(string userId, string userSecret)
         {
+            var userResults = await _dbAccess.QueryUser(userId, userSecret);
 
-            var passwordHash = BCrypt.Net.BCrypt.EnhancedHashPassword(userSecret);
-
-            Console.WriteLine(passwordHash);
-
-            var userCheckBool = _dbAccess.QueryUser(userId, passwordHash);
-
-
-            if(userCheckBool == true)
+            if(userResults.Id != "")
             {
                 _authModel.Claims = new Claim[]
                 {
-                    new Claim("user_id", userId ),
-                    new Claim("user_secret", userSecret)
+                    new Claim("user_id", userId)
                 };
 
                 var userSpecificToken = _authService.TokenGeneration(_authModel);

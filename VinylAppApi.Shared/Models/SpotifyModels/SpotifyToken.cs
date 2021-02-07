@@ -1,6 +1,4 @@
-﻿using System.Text.Json.Serialization;
-
-namespace VinylAppApi.Shared.Models.SpotifyModels
+﻿namespace VinylAppApi.Shared.Models.SpotifyModels
 {
     public class SpotifyToken
     {
