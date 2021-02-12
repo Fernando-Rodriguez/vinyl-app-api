@@ -1,18 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.Shared.Models.DbModels;
-
-//---------------------------//     
-//                           //
-//         ( ͡° ͜ʖ ͡°)          // 
-//                           //
-// Author: Fernando          //
-// Project: Family Vinyl Api //
-//---------------------------//
 
 namespace VinylAppApi.Controllers
 {

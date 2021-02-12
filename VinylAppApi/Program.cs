@@ -3,9 +3,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 //---------------------------//     
-//                           //
-//         ( ͡° ͜ʖ ͡°)          // 
-//                           //
 // Author: Fernando          //
 // Project: Family Vinyl Api //
 // Date: 1/29/21             //

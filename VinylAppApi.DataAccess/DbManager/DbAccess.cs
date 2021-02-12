@@ -7,7 +7,6 @@ using VinylAppApi.Shared.Models.AuthorizationModels;
 using VinylAppApi.Shared.Models.DbModels;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using System;
 using BC = BCrypt.Net.BCrypt;
 
 namespace VinylAppApi.DataAccess.DbManager
@@ -59,6 +58,8 @@ namespace VinylAppApi.DataAccess.DbManager
             var userDbRes = (await _databaseUser
                 .FindAsync(user => user.Id == userId))
                 .FirstOrDefault();
+
+       
 
             var albumDbRes = (await _ownedAlbums
                 .FindAsync(userName => userName.User == userDbRes.UserName))

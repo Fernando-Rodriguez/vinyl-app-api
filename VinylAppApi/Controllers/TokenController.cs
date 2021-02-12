@@ -3,14 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using VinylAppApi.Authorization.AuthorizationManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
 
-//---------------------------//     
-//                           //
-//         ( ͡° ͜ʖ ͡°)          // 
-//                           //
-// Author: Fernando          //
-// Project: Family Vinyl Api //
-//---------------------------//
-
 namespace VinylAppApi.Controllers
 {
     [Route("v1/api/[controller]")]
