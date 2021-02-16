@@ -45,7 +45,7 @@ namespace VinylAppApi.Controllers
         }
 
         [HttpPost]
-        public async Task Post([FromBody] OwnedAlbumModelDto userInput)
+        public async Task Post([FromBody] OwnedAlbumUpdateModel userInput)
         {
             await _dbAccess.PostAlbumAsync(userInput);
 

@@ -5,6 +5,6 @@ namespace VinylAppApi.DataAccess.DataCoordinationManager
 {
     public interface IMatchUpData
     {
-        Task<OwnedAlbumModel> DataMatcher(OwnedAlbumModelDto albumModelDTO);
+        Task<OwnedAlbumModel> DataMatcher(OwnedAlbumUpdateModel albumModelDTO);
     }
 }

@@ -78,7 +78,7 @@ namespace VinylAppApi.DataAccess.DbManager
             return albumDbRes;
         }
 
-        public async Task PostAlbumAsync(OwnedAlbumModelDto userInputAlbum)
+        public async Task PostAlbumAsync(OwnedAlbumUpdateModel userInputAlbum)
         {
             var checkIfAblumInDB = await _ownedAlbums.FindAsync(album => album.Album == userInputAlbum.Album);
 
