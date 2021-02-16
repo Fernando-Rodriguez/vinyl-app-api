@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -53,9 +56,20 @@ namespace VinylAppApi.Controllers
         }
 
         [HttpPut("{userId}/{id}")]
-        public async Task Update([FromBody] OwnedAlbumUpdateModel userInput, string id, string userId)
+        public async Task<HttpResponseMessage> Update([FromBody] OwnedAlbumUpdateModel userInput, string id, string userId)
         {
-            await _dbAccess.UpdateAlbumAsync(userId, id, userInput);
+            try
+            {
+                await _dbAccess.UpdateAlbumAsync(userId, id, userInput);
+
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            catch (Exception e)
+            {
+                Console.Write(e);
+                return new HttpResponseMessage(HttpStatusCode.ExpectationFailed);
+
+            }
         }
     }
 }

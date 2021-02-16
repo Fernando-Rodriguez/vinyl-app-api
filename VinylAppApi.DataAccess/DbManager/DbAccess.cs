@@ -8,9 +8,7 @@ using VinylAppApi.Shared.Models.DbModels;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using BC = BCrypt.Net.BCrypt;
-using System;
 using MongoDB.Driver.Linq;
-using MongoDB.Bson;
 
 namespace VinylAppApi.DataAccess.DbManager
 {
@@ -114,7 +112,7 @@ namespace VinylAppApi.DataAccess.DbManager
                                     (album.User == userItem.UserName)))
                 .ToList();
 
-            if (checkIfAlbumInDb.Count() == 1)
+            if (checkIfAlbumInDb.Count() != 0)
             {
                 await _ownedAlbums.UpdateOneAsync(
                     p => p.Id == id,
