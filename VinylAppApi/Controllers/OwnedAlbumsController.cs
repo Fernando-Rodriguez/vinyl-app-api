@@ -34,8 +34,8 @@ namespace VinylAppApi.Controllers
             };
         }
 
-        [HttpGet("{id}")]
-        public async Task<OwnedAlbumModel> Get([FromBody] string userId, string id)
+        [HttpGet("{userId}/{id}")]
+        public async Task<OwnedAlbumModel> Get(string userId, string id)
         {
             var response = await _dbAccess.GetAlbumModelByIdAsync(userId, id);
 
@@ -52,11 +52,10 @@ namespace VinylAppApi.Controllers
             _logger.LogDebug("OwnedAlbums has been called");
         }
 
-        [HttpPut]
-        public async Task Update([FromBody] OwnedAlbumModelDto userInput, string id)
+        [HttpPut("{userId}/{id}")]
+        public async Task Update([FromBody] OwnedAlbumUpdateModel userInput, string id, string userId)
         {
-            // string userId, string id, OwnedAlbumModelDto userAlbumChanges
-            await _dbAccess.UpdateAlbumAsync(userInput.UserId, id, userInput);
+            await _dbAccess.UpdateAlbumAsync(userId, id, userInput);
         }
     }
 }

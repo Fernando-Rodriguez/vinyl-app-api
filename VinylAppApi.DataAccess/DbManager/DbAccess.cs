@@ -8,6 +8,9 @@ using VinylAppApi.Shared.Models.DbModels;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using BC = BCrypt.Net.BCrypt;
+using System;
+using MongoDB.Driver.Linq;
+using MongoDB.Bson;
 
 namespace VinylAppApi.DataAccess.DbManager
 {
@@ -55,17 +58,20 @@ namespace VinylAppApi.DataAccess.DbManager
 
         public async Task<OwnedAlbumModel> GetAlbumModelByIdAsync(string userId, string id)
         {
-            var userDbRes = (await _databaseUser
-                .FindAsync(user => user.Id == userId))
-                .FirstOrDefault();
+            var albumDbRes = new OwnedAlbumModel();
 
-       
+            var userDbRes = await _databaseUser
+                .FindAsync(user => user.Id == userId);
 
-            var albumDbRes = (await _ownedAlbums
-                .FindAsync(userName => userName.User == userDbRes.UserName))
-                .ToList()
-                .Where(album => album.Id == id)
-                .FirstOrDefault();
+            var userItem = userDbRes.FirstOrDefault();
+
+            if(userItem != null)
+            {
+                var userAlbums = (await _ownedAlbums.FindAsync(album => album.User == userItem.UserName)).ToList();
+                albumDbRes = userAlbums
+                    .Where(album => album.Id == id)
+                    .FirstOrDefault();
+            }
 
             _logger.LogDebug("<------ Id Albums Returned ------>");
 
@@ -96,18 +102,29 @@ namespace VinylAppApi.DataAccess.DbManager
             }
         }
 
-        public async Task UpdateAlbumAsync(string userId, string id, OwnedAlbumModelDto userAlbumChanges)
+        public async Task UpdateAlbumAsync(string userId, string id, OwnedAlbumUpdateModel userAlbumChanges)
         {
-            var checkIfAlbumInDb = (await _ownedAlbums.FindAsync(album => album.Id == id)).ToList();
+            var userDbRes = await _databaseUser
+                .FindAsync(user => user.Id == userId);
 
-            if (checkIfAlbumInDb.Count() != 0)
+            var userItem = userDbRes.FirstOrDefault();
+
+            var checkIfAlbumInDb = (await _ownedAlbums
+                .FindAsync(album => (album.Id == id) &&
+                                    (album.User == userItem.UserName)))
+                .ToList();
+
+            if (checkIfAlbumInDb.Count() == 1)
             {
-                await _ownedAlbums.ReplaceOneAsync(album => album.Id == id, new OwnedAlbumModel()
-                {
-                    User = userAlbumChanges.User,
-                    Album = userAlbumChanges.Album,
-                    Artist = userAlbumChanges.Artist
-                });
+                await _ownedAlbums.UpdateOneAsync(
+                    p => p.Id == id,
+                    Builders<OwnedAlbumModel>
+                        .Update
+                        .Set("user", userAlbumChanges.User)
+                        .Set("album", userAlbumChanges.Album)
+                        .Set("artist", userAlbumChanges.Artist)
+                        .Set("rating", userAlbumChanges.Rating)
+                );
             }
 
             _logger.LogDebug("<------ Update Albums Success ------>");

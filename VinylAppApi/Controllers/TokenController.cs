@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using VinylAppApi.Authorization.AuthorizationManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
@@ -20,13 +22,20 @@ namespace VinylAppApi.Controllers
         {
             //verify that those two fields are good then...
 
-            var tokenResponse = await _verify
+            if(string.IsNullOrEmpty(requestTokenInfo.ClientName) || string.IsNullOrEmpty(requestTokenInfo.ClientSecret))
+            {
+                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+            }
+            else
+            {
+                var tokenResponse = await _verify
                 .UserVerifcationWithIdAndSecret(
                     requestTokenInfo.ClientName,
                     requestTokenInfo.ClientSecret
                 );
 
-            return tokenResponse;
+                return tokenResponse;
+            }
         }
     }
 }

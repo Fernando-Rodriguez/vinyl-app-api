@@ -43,7 +43,8 @@ namespace VinylAppApi.DataAccess.DataCoordinationManager
                 User = albumModelDTO.User,
                 Album = albumModelDTO.Album,
                 Artist = albumModelDTO.Artist,
-                ImageUrl = imageUrl
+                ImageUrl = imageUrl,
+                Rating = albumModelDTO.Rating
             };
 
             mainOutModel = outputModel;

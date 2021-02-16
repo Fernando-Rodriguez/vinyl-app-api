@@ -13,7 +13,7 @@ namespace VinylAppApi.DataAccess.DbManager
         Task<List<OwnedAlbumModel>> GetAllOwnedAlbumModelsAsync();
         Task PostAlbumAsync(OwnedAlbumModelDto userInputAlbum);
         Task<UserModel> QueryUser(string userName, string userPassword);
-        Task UpdateAlbumAsync(string userId, string id, OwnedAlbumModelDto userAlbumChanges);
+        Task UpdateAlbumAsync(string userId, string id, OwnedAlbumUpdateModel userAlbumChanges);
         Task<List<OwnedAlbumModel>> GetAlbumByUserId(string userId);
     }
 }
