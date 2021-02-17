@@ -1,6 +1,6 @@
-﻿namespace VinylAppApi.Shared.Models.DbModels
+﻿namespace VinylAppApi.Shared.Models.UserInterfacingModels
 {
-    public class OwnedAlbumUpdateModel
+    public class AlbumUpdateModelDTO
     {
         public string User { get; set; }
         public string Album { get; set; }

@@ -1,4 +1,4 @@
-﻿namespace VinylAppApi.Shared.Models.AuthorizationModels
+﻿namespace VinylAppApi.Shared.Models.UserInterfacingModels
 {
 
     // This is the format of the JSON that a user will

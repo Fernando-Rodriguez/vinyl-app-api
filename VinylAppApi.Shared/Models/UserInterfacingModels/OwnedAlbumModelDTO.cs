@@ -1,4 +1,4 @@
-﻿namespace VinylAppApi.Shared.Models.DbModels
+﻿namespace VinylAppApi.Shared.Models.UserInterfacingModels
 {
     // This contains the data that can be passed to a user.
     // It contains no secrets.

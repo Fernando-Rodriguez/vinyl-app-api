@@ -7,8 +7,8 @@ using VinylAppApi.Shared.Models.AuthorizationModels;
 using VinylAppApi.Shared.Models.DbModels;
 using System.Linq;
 using Microsoft.Extensions.Logging;
-using BC = BCrypt.Net.BCrypt;
 using MongoDB.Driver.Linq;
+using VinylAppApi.Shared.Models.UserInterfacingModels;
 
 namespace VinylAppApi.DataAccess.DbManager
 {
@@ -81,7 +81,7 @@ namespace VinylAppApi.DataAccess.DbManager
             return albumDbRes;
         }
 
-        public async Task PostAlbumAsync(OwnedAlbumUpdateModel userInputAlbum)
+        public async Task PostAlbumAsync(AlbumUpdateModelDTO userInputAlbum)
         {
             var checkIfAblumInDB = await _ownedAlbums.FindAsync(album => album.Album == userInputAlbum.Album);
 
@@ -105,7 +105,7 @@ namespace VinylAppApi.DataAccess.DbManager
             }
         }
 
-        public async Task UpdateAlbumAsync(string userId, string id, OwnedAlbumUpdateModel userAlbumChanges)
+        public async Task UpdateAlbumAsync(string userId, string id, AlbumUpdateModelDTO userAlbumChanges)
         {
             //var userDbRes = await _databaseUser
             //    .FindAsync(user => user.Id == userId);

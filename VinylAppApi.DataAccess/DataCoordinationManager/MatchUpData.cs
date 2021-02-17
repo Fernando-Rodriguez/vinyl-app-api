@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using VinylAppApi.Shared.Models.DbModels;
+using VinylAppApi.Shared.Models.UserInterfacingModels;
 using VinylAppApi.SpotifyHandler.SpotifyApiManager;
 
 namespace VinylAppApi.DataAccess.DataCoordinationManager
@@ -18,7 +19,7 @@ namespace VinylAppApi.DataAccess.DataCoordinationManager
             _logger = logger;
         }
 
-        public async Task<OwnedAlbumModel> DataMatcher(OwnedAlbumUpdateModel albumModelDTO)
+        public async Task<OwnedAlbumModel> DataMatcher(AlbumUpdateModelDTO albumModelDTO)
         {
             string searchAlbum = albumModelDTO.Album;
 
