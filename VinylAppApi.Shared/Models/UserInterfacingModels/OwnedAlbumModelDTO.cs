@@ -1,5 +1,7 @@
 ﻿namespace VinylAppApi.Shared.Models.DbModels
 {
+    // This contains the data that can be passed to a user.
+    // It contains no secrets.
     public class OwnedAlbumModelDto
     {
         public int Id { get; set; }

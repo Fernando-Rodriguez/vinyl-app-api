@@ -10,7 +10,6 @@ using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.DataAccess.DataCoordinationManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
 using VinylAppApi.SpotifyHandler.SpotifyApiManager;
-using Newtonsoft.Json;
 
 namespace VinylAppApi
 {
@@ -43,13 +42,19 @@ namespace VinylAppApi
 
             services.AddSwaggerGen();
             services.AddControllers();
-            services.AddTransient<IDbAccess, DbAccess>();
-            services.AddTransient<ISpotifyRequest, SpotifyRequest>();
-            services.AddTransient<IMatchUpData, MatchUpData>();
+
+            services.AddScoped<IDbAccess, DbAccess>();
+            services.AddScoped<ISpotifyRequest, SpotifyRequest>();
+            services.AddScoped<IMatchUpData, MatchUpData>();
+            services.AddScoped<IDbUserManager, DbUserManager>();
+            services.AddScoped<IAuthContainerModel, JwtContainerModel>();
+            services.AddScoped<IAuthService, JwtService>();
+            services.AddScoped<IAuthorizationVerification, AuthorizationVerification>();
+
             services.AddSingleton<ITokenManager, TokenManager>();
-            services.AddTransient<IAuthContainerModel, JwtContainerModel>();
-            services.AddTransient<IAuthService, JwtService>();
-            services.AddTransient<IAuthorizationVerification, AuthorizationVerification>();
+            services.AddSingleton<IDbClient, DbClient>();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

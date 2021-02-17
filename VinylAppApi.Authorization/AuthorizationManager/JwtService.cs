@@ -33,15 +33,16 @@ namespace VinylAppApi.Authorization.AuthorizationManager
 
             try
             {
-                ClaimsPrincipal tokenValid = jwtSecurityTokenHandler
-                    .ValidateToken(token, tokenValidationParameters, out SecurityToken validatedToken);
+                ClaimsPrincipal tokenValid = jwtSecurityTokenHandler.ValidateToken(token,
+                                                                                   tokenValidationParameters,
+                                                                                   out SecurityToken validatedToken);
+
                 return tokenValid.Claims;
             }
             catch (Exception ex)
             {
                 throw ex;
             }
-            
         }
 
         public bool IsTokenValid(string token)

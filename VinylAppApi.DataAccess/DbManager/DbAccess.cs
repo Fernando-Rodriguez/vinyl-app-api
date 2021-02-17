@@ -21,19 +21,22 @@ namespace VinylAppApi.DataAccess.DbManager
     {
         private readonly IMongoCollection<OwnedAlbumModel> _ownedAlbums;
         private readonly IMongoCollection<UserModel> _databaseUser;
+
+        private readonly IDbUserManager _userManager;
+
+        private readonly IDbClient _dbClient;
         private readonly IMatchUpData _matchUpData;
         private ILogger<DbAccess> _logger;
 
-        public DbAccess(ILogger<DbAccess> logger, IConfiguration configuration, IMatchUpData matchUpData)
+        public DbAccess(ILogger<DbAccess> logger, IMatchUpData matchUpData, IDbClient dbClient, IDbUserManager userManager)
         {
-            var config = configuration;
             _matchUpData = matchUpData;
             _logger = logger;
+            _dbClient = dbClient;
+            _userManager = userManager;
 
-            var dbClient = new MongoClient(config.GetConnectionString("MongoDb"));
-            var db = dbClient.GetDatabase("vinyl-db");
-            _ownedAlbums = db.GetCollection<OwnedAlbumModel>("albums");
-            _databaseUser = db.GetCollection<UserModel>("users");
+            _ownedAlbums = _dbClient.AlbumCollection();
+            _databaseUser = _dbClient.UsersCollection();
         }
 
         public async Task<List<OwnedAlbumModel>> GetAllOwnedAlbumModelsAsync()
@@ -48,7 +51,7 @@ namespace VinylAppApi.DataAccess.DbManager
         }
 
         public async Task<List<OwnedAlbumModel>> GetAlbumByUserId(string userId)
-        {
+        { 
             var albumByUserIdList = await _ownedAlbums.FindAsync(album => album.User == userId);
 
             return albumByUserIdList.ToList();
@@ -58,10 +61,12 @@ namespace VinylAppApi.DataAccess.DbManager
         {
             var albumDbRes = new OwnedAlbumModel();
 
-            var userDbRes = await _databaseUser
-                .FindAsync(user => user.Id == userId);
+            //var userDbRes = await _databaseUser
+            //    .FindAsync(user => user.Id == userId);
 
-            var userItem = userDbRes.FirstOrDefault();
+            var userDbRes = await _userManager.QueryUserById(userId);
+
+            var userItem = userDbRes;
 
             if(userItem != null)
             {
@@ -102,10 +107,12 @@ namespace VinylAppApi.DataAccess.DbManager
 
         public async Task UpdateAlbumAsync(string userId, string id, OwnedAlbumUpdateModel userAlbumChanges)
         {
-            var userDbRes = await _databaseUser
-                .FindAsync(user => user.Id == userId);
+            //var userDbRes = await _databaseUser
+            //    .FindAsync(user => user.Id == userId);
 
-            var userItem = userDbRes.FirstOrDefault();
+            var userDbRes = await _userManager.QueryUserById(userId);
+
+            var userItem = userDbRes;
 
             var checkIfAlbumInDb = (await _ownedAlbums
                 .FindAsync(album => (album.Id == id) &&
@@ -152,47 +159,6 @@ namespace VinylAppApi.DataAccess.DbManager
 
             _logger.LogDebug("<------ Deleted Albums By Id Success ------>");
 
-        }
-
-        public async Task<UserModel> QueryUser(string userName, string userPassword)
-        {
-
-            var errorModel = new UserModel
-            {
-                Id = "",
-                UserName = "",
-                UserSecret = "",
-                UserRole = ""
-            };
-
-            var userQuery = (await _databaseUser.FindAsync(user => user.UserName == userName)).ToList().First();
-
-            string hashed = userQuery.UserSecret;
-
-            if (userQuery != null)
-            {
-                var isVerified = BC.Verify(userPassword, hashed);
-
-                if (isVerified)
-                {
-                    return userQuery;
-                }
-                else
-                {
-                    return errorModel;
-                }
-            }
-            else
-            {
-                return errorModel;
-            }
-        }
-
-        public async Task<UserModel> QueryUserByName(string userName)
-        {
-            var userQueryName = await _databaseUser.FindAsync(user => user.UserName == userName);
-
-            return userQueryName.First();
         }
     }
 }

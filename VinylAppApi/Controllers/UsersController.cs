@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VinylAppApi.Authorization.AuthorizationManager;
 using VinylAppApi.DataAccess.DbManager;
+using VinylAppApi.Shared.Models.UserInterfacingModels;
 
 namespace VinylAppApi.Controllers
 {
@@ -12,28 +13,32 @@ namespace VinylAppApi.Controllers
     public class UsersController : Controller
     {
         private ILogger<UsersController> _logger;
-        private readonly IDbAccess _dbAccess;
-        private IAuthService _test;
+        private IAuthService _authService;
+        private readonly IDbUserManager _userManager;
 
-        public UsersController(ILogger<UsersController> logger, IDbAccess dbAccess, IAuthService test)
+        public UsersController(ILogger<UsersController> logger, IAuthService authService, IDbUserManager userManager)
         {
             _logger = logger;
-            _dbAccess = dbAccess;
-            _test = test;
+            _authService = authService;
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public string GetUsersById()
+        public UserInfoModelDTO GetUsersById()
         {
-            var item = HttpContext.Request.Headers["Authorization"];
+            var authHeader = HttpContext.Request.Headers["Authorization"];
 
-            var authHeader = item.ToString()["Bearer ".Length..].Trim();
+            var token = authHeader.ToString()["Bearer ".Length..].Trim();
 
-            var result = _test.GetTokenClaims(authHeader).ToList().First().Subject.Claims.First().Value;
+            var result = _authService.GetTokenClaims(token).ToArray();
 
-            _dbAccess.QueryUser(result, "");
+            var resultUser = new UserInfoModelDTO
+            {
+                UserName = result[0].Value,
+                UserId = result[1].Value
+            };
 
-            return result;
+            return resultUser;
         }
     }
 }
