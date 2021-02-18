@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
+// This is the actual model that represents the db.
 namespace VinylAppApi.Shared.Models.DbModels
 {
     public class OwnedAlbumModel

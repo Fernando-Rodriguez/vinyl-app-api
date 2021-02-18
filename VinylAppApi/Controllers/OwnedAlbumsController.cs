@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.Shared.Models.DbModels;
+using VinylAppApi.Shared.Models.UserInterfacingModels;
 
 namespace VinylAppApi.Controllers
 {
@@ -25,13 +26,13 @@ namespace VinylAppApi.Controllers
         }
 
         [HttpGet]
-        public async Task<Albums> Get()
+        public async Task<AlbumsDTO> Get()
         {
             var dbResponse = await _dbAccess.GetAllOwnedAlbumModelsAsync();
 
             _logger.LogDebug("OwnedAlbums has been called");
 
-            return new Albums
+            return new AlbumsDTO
             {
                 Owned_Albums = dbResponse
             };
@@ -48,15 +49,23 @@ namespace VinylAppApi.Controllers
         }
 
         [HttpPost]
-        public async Task Post([FromBody] OwnedAlbumUpdateModel userInput)
+        public async Task Post([FromBody] AlbumUpdateModelDTO userInput)
         {
-            await _dbAccess.PostAlbumAsync(userInput);
+            try
+            {
+                await _dbAccess.PostAlbumAsync(userInput);
+
+            }
+            catch(Exception err)
+            {
+                _logger.LogError("Post Failed");
+            }
 
             _logger.LogDebug("OwnedAlbums has been called");
         }
 
         [HttpPut("{userId}/{id}")]
-        public async Task<HttpResponseMessage> Update([FromBody] OwnedAlbumUpdateModel userInput, string id, string userId)
+        public async Task<HttpResponseMessage> Update([FromBody] AlbumUpdateModelDTO userInput, string id, string userId)
         {
             try
             {

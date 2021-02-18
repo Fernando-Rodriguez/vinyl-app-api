@@ -2,8 +2,9 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using VinylAppApi.Authorization.AuthorizationManager;
-using VinylAppApi.Shared.Models.AuthorizationModels;
+using VinylAppApi.Shared.Models.UserInterfacingModels;
 
 namespace VinylAppApi.Controllers
 {
@@ -11,17 +12,17 @@ namespace VinylAppApi.Controllers
     public class TokenController : Controller
     {
         private IAuthorizationVerification _verify;
+        private ILogger<TokenController> _logger;
 
-        public TokenController(IAuthorizationVerification verify)
+        public TokenController(IAuthorizationVerification verify, ILogger<TokenController> logger)
         {
             _verify = verify;
+            _logger = logger;
         }
 
         [HttpPost]
         public async Task<object> Post([FromBody] TokenRequestDTO requestTokenInfo)
         {
-            //verify that those two fields are good then...
-
             if(string.IsNullOrEmpty(requestTokenInfo.ClientName) || string.IsNullOrEmpty(requestTokenInfo.ClientSecret))
             {
                 return new HttpResponseMessage(HttpStatusCode.BadRequest);
@@ -29,10 +30,12 @@ namespace VinylAppApi.Controllers
             else
             {
                 var tokenResponse = await _verify
-                .UserVerifcationWithIdAndSecret(
-                    requestTokenInfo.ClientName,
-                    requestTokenInfo.ClientSecret
-                );
+                    .UserVerifcationWithIdAndSecret(
+                        requestTokenInfo.ClientName,
+                        requestTokenInfo.ClientSecret
+                    );
+
+                _logger.LogDebug($"user {requestTokenInfo.ClientName} request token");
 
                 return tokenResponse;
             }

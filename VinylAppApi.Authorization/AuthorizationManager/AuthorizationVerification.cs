@@ -1,7 +1,6 @@
 ﻿using System.Security.Claims;
 using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
-using System;
 using System.Threading.Tasks;
 
 namespace VinylAppApi.Authorization.AuthorizationManager
@@ -10,26 +9,28 @@ namespace VinylAppApi.Authorization.AuthorizationManager
     {
         private IAuthContainerModel _authModel;
         private IAuthService _authService;
-        private IDbAccess _dbAccess;
+        private IDbUserManager _userManager;
 
         public AuthorizationVerification(IAuthContainerModel authModel,
             IAuthService authService,
-            IDbAccess dbAccess)
+            IDbUserManager userManager)
         {
             _authModel = authModel;
             _authService = authService;
-            _dbAccess = dbAccess;
+            _userManager = userManager;
         }
 
-        public async Task<object> UserVerifcationWithIdAndSecret(string userId, string userSecret)
+        public async Task<object> UserVerifcationWithIdAndSecret(string userName, string userSecret)
         {
-            var userResults = await _dbAccess.QueryUser(userId, userSecret);
+            var userResults = await _userManager.VerifyUser(userName, userSecret);
 
             if(userResults.Id != "")
             {
                 _authModel.Claims = new Claim[]
                 {
-                    new Claim("user_id", userId)
+                    new Claim("user_name", userResults.UserName),
+                    new Claim("user_id", userResults.Id),
+                    new Claim("user_role", userResults.UserRole)
                 };
 
                 var userSpecificToken = _authService.TokenGeneration(_authModel);
