@@ -38,6 +38,17 @@ namespace VinylAppApi.Controllers
             };
         }
 
+        [HttpGet("{userId}")]
+        public async Task<AlbumsDTO> Get(string userId)
+        {
+            var dbResponse = await _dbAccess.GetAlbumByUserId(userId);
+
+            return new AlbumsDTO
+            {
+                Owned_Albums = dbResponse
+            };
+        }
+
         [HttpGet("{userId}/{id}")]
         public async Task<OwnedAlbumModel> Get(string userId, string id)
         {
@@ -56,9 +67,10 @@ namespace VinylAppApi.Controllers
                 await _dbAccess.PostAlbumAsync(userInput);
 
             }
-            catch(Exception err)
+            catch (Exception err)
             {
                 _logger.LogError("Post Failed");
+                _logger.LogError(err.ToString());
             }
 
             _logger.LogDebug("OwnedAlbums has been called");
@@ -78,6 +90,22 @@ namespace VinylAppApi.Controllers
                 Console.Write(e);
                 return new HttpResponseMessage(HttpStatusCode.ExpectationFailed);
 
+            }
+        }
+
+        [HttpDelete("{userId}/{id}")]
+        public async Task<HttpResponseMessage> Delete(string userId, string id)
+        {
+            try
+            {
+                await _dbAccess.DeleteAlbumByIdAsync(userId, id);
+                return new HttpResponseMessage(HttpStatusCode.OK);
+            }
+            catch(Exception e)
+            {
+                _logger.LogError("Error Deleting album.");
+                _logger.LogError(e.ToString());
+                return new HttpResponseMessage(HttpStatusCode.InternalServerError);
             }
         }
     }

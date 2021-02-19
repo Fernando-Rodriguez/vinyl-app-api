@@ -51,8 +51,10 @@ namespace VinylAppApi.DataAccess.DbManager
         }
 
         public async Task<List<OwnedAlbumModel>> GetAlbumByUserId(string userId)
-        { 
-            var albumByUserIdList = await _ownedAlbums.FindAsync(album => album.User == userId);
+        {
+            var user = await _userManager.QueryUserById(userId);
+
+            var albumByUserIdList = await _ownedAlbums.FindAsync(album => album.User == user.UserName);
 
             return albumByUserIdList.ToList();
         }
@@ -146,19 +148,6 @@ namespace VinylAppApi.DataAccess.DbManager
             }
 
             _logger.LogDebug("<------ Deleted Albums Success ------>");
-        }
-
-        public async Task DeleteAlbumByAlbumNameAsync(string userId, OwnedAlbumModelDto userAlbumToDelete)
-        {
-            var checkIfAlbumInDb = (await _ownedAlbums.FindAsync(album => album.Album == userAlbumToDelete.Album)).ToList();
-
-            if (checkIfAlbumInDb.Count() != 0)
-            {
-                await _ownedAlbums.DeleteOneAsync(album => album.Album == userAlbumToDelete.Album);
-            }
-
-            _logger.LogDebug("<------ Deleted Albums By Id Success ------>");
-
         }
     }
 }

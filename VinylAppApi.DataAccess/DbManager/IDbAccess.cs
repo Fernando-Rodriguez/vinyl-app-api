@@ -7,7 +7,6 @@ namespace VinylAppApi.DataAccess.DbManager
 {
     public interface IDbAccess
     {
-        Task DeleteAlbumByAlbumNameAsync(string userId, OwnedAlbumModelDto userAlbumToDelete);
         Task DeleteAlbumByIdAsync(string userId, string id);
         Task<OwnedAlbumModel> GetAlbumModelByIdAsync(string userId, string id);
         Task<List<OwnedAlbumModel>> GetAllOwnedAlbumModelsAsync();
