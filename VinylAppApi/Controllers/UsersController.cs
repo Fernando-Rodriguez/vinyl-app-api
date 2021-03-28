@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -39,6 +41,31 @@ namespace VinylAppApi.Controllers
             };
 
             return resultUser;
+        }
+
+        [AllowAnonymous]
+        [HttpPost("new")]
+        public async Task<UserInfoModelDTO> CreateNewUser([FromBody] NewUserModelDTO user)
+        {
+            try
+            {
+                var newUser = await _userManager.CreateUser(user);
+
+                return new UserInfoModelDTO
+                {
+                    UserName = newUser.UserName,
+                    UserId = newUser.Id
+                };
+            }
+            catch(Exception err)
+            {
+                _logger.LogError($"Error in creating new user: {err}");
+                return new UserInfoModelDTO
+                {
+                    UserName = "",
+                    UserId = ""
+                };
+            }
         }
     }
 }

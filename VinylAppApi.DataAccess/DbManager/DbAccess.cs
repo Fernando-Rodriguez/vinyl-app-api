@@ -63,9 +63,6 @@ namespace VinylAppApi.DataAccess.DbManager
         {
             var albumDbRes = new OwnedAlbumModel();
 
-            //var userDbRes = await _databaseUser
-            //    .FindAsync(user => user.Id == userId);
-
             var userDbRes = await _userManager.QueryUserById(userId);
 
             var userItem = userDbRes;
@@ -109,9 +106,6 @@ namespace VinylAppApi.DataAccess.DbManager
 
         public async Task UpdateAlbumAsync(string userId, string id, AlbumUpdateModelDTO userAlbumChanges)
         {
-            //var userDbRes = await _databaseUser
-            //    .FindAsync(user => user.Id == userId);
-
             var userDbRes = await _userManager.QueryUserById(userId);
 
             var userItem = userDbRes;

@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using VinylAppApi.Shared.Models.AuthorizationModels;
+using VinylAppApi.Shared.Models.UserInterfacingModels;
 using BC = BCrypt.Net.BCrypt;
 
 namespace VinylAppApi.DataAccess.DbManager
@@ -45,10 +47,10 @@ namespace VinylAppApi.DataAccess.DbManager
 
             var userQuery = (await _databaseUser.FindAsync(user => user.UserName == userName)).First();
 
-            string hashed = userQuery.UserSecret;
-
             if (userQuery != null)
             {
+                string hashed = userQuery.UserSecret;
+
                 var isVerified = BC.Verify(userPassword, hashed);
 
                 if (isVerified)
@@ -63,6 +65,39 @@ namespace VinylAppApi.DataAccess.DbManager
             else
             {
                 return errorModel;
+            }
+        }
+
+        public async Task<UserModel> CreateUser(NewUserModelDTO user)
+        {
+            try
+            {
+                string hashedPass = BC.HashPassword(user.UserSecret);
+
+                Console.WriteLine(hashedPass);
+
+                await _databaseUser.InsertOneAsync(new UserModel
+                {
+                    UserName = user.UserName,
+                    UserSecret = hashedPass,
+                    UserRole = "basic"
+                });
+
+                var queryUser = await VerifyUser(user.UserName, hashedPass);
+
+                return queryUser;
+            }
+            catch (Exception err)
+            {
+                _logger.LogError($"there was an error making a user: {err}");
+
+                return new UserModel
+                {
+                    Id = "",
+                    UserName = "",
+                    UserSecret = "",
+                    UserRole = ""
+                };
             }
         }
     }
