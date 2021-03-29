@@ -9,7 +9,7 @@ namespace VinylAppApi.DataAccess.DbManager
     {
         Task DeleteAlbumByIdAsync(string userId, string id);
         Task<OwnedAlbumModel> GetAlbumModelByIdAsync(string userId, string id);
-        Task<List<OwnedAlbumModel>> GetAllOwnedAlbumModelsAsync();
+        Task<List<OwnedAlbumModel>> GetAllOwnedAlbumModelsAsync(string id);
         Task PostAlbumAsync(AlbumUpdateModelDTO userInputAlbum);
         Task UpdateAlbumAsync(string userId, string id, AlbumUpdateModelDTO userAlbumChanges);
         Task<List<OwnedAlbumModel>> GetAlbumByUserId(string userId);

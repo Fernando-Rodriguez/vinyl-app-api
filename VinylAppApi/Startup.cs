@@ -10,6 +10,7 @@ using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.DataAccess.DataCoordinationManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
 using VinylAppApi.SpotifyHandler.SpotifyApiManager;
+using VinylAppApi.Helpers;
 
 namespace VinylAppApi
 {
@@ -50,11 +51,10 @@ namespace VinylAppApi
             services.AddScoped<IAuthContainerModel, JwtContainerModel>();
             services.AddScoped<IAuthService, JwtService>();
             services.AddScoped<IAuthorizationVerification, AuthorizationVerification>();
+            services.AddScoped<IUserTokenHelper, UserTokenHelper>();
 
             services.AddSingleton<ITokenManager, TokenManager>();
             services.AddSingleton<IDbClient, DbClient>();
-
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

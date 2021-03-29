@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 using VinylAppApi.Authorization.AuthorizationManager;
 using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.Shared.Models.UserInterfacingModels;
-
+using VinylAppApi.Helpers;
 namespace VinylAppApi.Controllers
 {
     [Route("v1/api/[controller]")]
@@ -16,55 +16,54 @@ namespace VinylAppApi.Controllers
     {
         private ILogger<UsersController> _logger;
         private IAuthService _authService;
+        private IUserTokenHelper _helper;
         private readonly IDbUserManager _userManager;
 
-        public UsersController(ILogger<UsersController> logger, IAuthService authService, IDbUserManager userManager)
+        public UsersController(ILogger<UsersController> logger, IAuthService authService, IDbUserManager userManager, IUserTokenHelper helper)
         {
             _logger = logger;
             _authService = authService;
             _userManager = userManager;
+            _helper = helper;
         }
 
         [HttpGet]
-        public UserInfoModelDTO GetUsersById()
+        public async Task<IActionResult> GetUsersById()
         {
-            var authHeader = HttpContext.Request.Headers["Authorization"];
-
-            var token = authHeader.ToString()["Bearer ".Length..].Trim();
-
-            var result = _authService.GetTokenClaims(token).ToArray();
-
-            var resultUser = new UserInfoModelDTO
+            try
             {
-                UserName = result[0].Value,
-                UserId = result[1].Value
-            };
+                var myContext = HttpContext;
 
-            return resultUser;
+                var myNewResult = await _helper.RetrieveUser(myContext);
+           
+                return Ok(myNewResult);
+            }
+            catch (Exception err)
+            {
+                _logger.LogError($"Error getting user: {err}");
+                return StatusCode(500);
+            }
+            
         }
 
         [AllowAnonymous]
         [HttpPost("new")]
-        public async Task<UserInfoModelDTO> CreateNewUser([FromBody] NewUserModelDTO user)
+        public async Task<IActionResult> CreateNewUser([FromBody] NewUserModelDTO user)
         {
             try
             {
                 var newUser = await _userManager.CreateUser(user);
 
-                return new UserInfoModelDTO
+                return Ok(new UserInfoModelDTO
                 {
                     UserName = newUser.UserName,
                     UserId = newUser.Id
-                };
+                });
             }
             catch(Exception err)
             {
                 _logger.LogError($"Error in creating new user: {err}");
-                return new UserInfoModelDTO
-                {
-                    UserName = "",
-                    UserId = ""
-                };
+                return BadRequest();
             }
         }
     }

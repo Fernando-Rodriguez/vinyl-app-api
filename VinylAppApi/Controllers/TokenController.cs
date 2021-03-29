@@ -21,11 +21,11 @@ namespace VinylAppApi.Controllers
         }
 
         [HttpPost]
-        public async Task<object> Post([FromBody] TokenRequestDTO requestTokenInfo)
+        public async Task<IActionResult> Post([FromBody] TokenRequestDTO requestTokenInfo)
         {
-            if(string.IsNullOrEmpty(requestTokenInfo.ClientName) || string.IsNullOrEmpty(requestTokenInfo.ClientSecret))
+            if (string.IsNullOrEmpty(requestTokenInfo.ClientName) || string.IsNullOrEmpty(requestTokenInfo.ClientSecret))
             {
-                return new HttpResponseMessage(HttpStatusCode.BadRequest);
+                return BadRequest();
             }
             else
             {
@@ -37,7 +37,7 @@ namespace VinylAppApi.Controllers
 
                 _logger.LogDebug($"user {requestTokenInfo.ClientName} request token");
 
-                return tokenResponse;
+                return Ok(tokenResponse);
             }
         }
     }
