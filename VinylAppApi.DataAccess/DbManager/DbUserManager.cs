@@ -100,5 +100,26 @@ namespace VinylAppApi.DataAccess.DbManager
                 };
             }
         }
+
+        public async Task<bool> UpdatePassword(string id, string newPass)
+        {
+            try
+            {
+                var hashedPass = BC.HashPassword(newPass);
+                var userRes = await _databaseUser.UpdateOneAsync(
+                    p => p.Id == id,
+                    Builders<UserModel>
+                        .Update
+                        .Set("user_secret", hashedPass)
+                );
+
+                return true;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.ToString());
+                return false;
+            }
+        }
     }
 }
