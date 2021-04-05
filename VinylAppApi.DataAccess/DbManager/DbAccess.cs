@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using VinylAppApi.DataAccess.DataCoordinationManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
@@ -39,11 +38,12 @@ namespace VinylAppApi.DataAccess.DbManager
             _databaseUser = _dbClient.UsersCollection();
         }
 
-        public async Task<List<OwnedAlbumModel>> GetAllOwnedAlbumModelsAsync()
+        public async Task<List<OwnedAlbumModel>> GetAllOwnedAlbumModelsAsync(string id)
         {
             //This method returns all albums regardless of the user info.
+            var user = await _userManager.QueryUserById(id);
 
-            var response = await _ownedAlbums.FindAsync(user => true);
+            var response = await _ownedAlbums.FindAsync(album => album.User == user.UserName);
 
             _logger.LogDebug("<------ All Albums Returned ------>");
 
@@ -52,6 +52,8 @@ namespace VinylAppApi.DataAccess.DbManager
 
         public async Task<List<OwnedAlbumModel>> GetAlbumByUserId(string userId)
         {
+            // Depreciated, should be removed sine it is now default action.
+           
             var user = await _userManager.QueryUserById(userId);
 
             var albumByUserIdList = await _ownedAlbums.FindAsync(album => album.User == user.UserName);
@@ -62,9 +64,6 @@ namespace VinylAppApi.DataAccess.DbManager
         public async Task<OwnedAlbumModel> GetAlbumModelByIdAsync(string userId, string id)
         {
             var albumDbRes = new OwnedAlbumModel();
-
-            //var userDbRes = await _databaseUser
-            //    .FindAsync(user => user.Id == userId);
 
             var userDbRes = await _userManager.QueryUserById(userId);
 
@@ -109,9 +108,6 @@ namespace VinylAppApi.DataAccess.DbManager
 
         public async Task UpdateAlbumAsync(string userId, string id, AlbumUpdateModelDTO userAlbumChanges)
         {
-            //var userDbRes = await _databaseUser
-            //    .FindAsync(user => user.Id == userId);
-
             var userDbRes = await _userManager.QueryUserById(userId);
 
             var userItem = userDbRes;
