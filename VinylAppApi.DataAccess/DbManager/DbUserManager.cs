@@ -72,20 +72,36 @@ namespace VinylAppApi.DataAccess.DbManager
         {
             try
             {
-                string hashedPass = BC.HashPassword(user.UserSecret);
+                var exisitingUser = await _databaseUser.FindAsync(user => user.UserName == user.UserName);
 
-                Console.WriteLine(hashedPass);
-
-                await _databaseUser.InsertOneAsync(new UserModel
+                if(exisitingUser.ToList().Count == 0)
                 {
-                    UserName = user.UserName,
-                    UserSecret = hashedPass,
-                    UserRole = "basic"
-                });
+                    string hashedPass = BC.HashPassword(user.UserSecret);
 
-                var queryUser = await VerifyUser(user.UserName, hashedPass);
+                    Console.WriteLine(hashedPass);
 
-                return queryUser;
+                    await _databaseUser.InsertOneAsync(new UserModel
+                    {
+                        UserName = user.UserName,
+                        UserSecret = hashedPass,
+                        UserRole = "basic"
+                    });
+
+                    var queryUser = await VerifyUser(user.UserName, hashedPass);
+
+                    return queryUser;
+                }
+
+                else
+                {
+                    return new UserModel
+                    {
+                        Id = "",
+                        UserName = "",
+                        UserSecret = "",
+                        UserRole = ""
+                    };
+                }
             }
             catch (Exception err)
             {
