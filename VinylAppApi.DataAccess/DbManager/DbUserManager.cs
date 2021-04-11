@@ -68,26 +68,26 @@ namespace VinylAppApi.DataAccess.DbManager
             }
         }
 
-        public async Task<UserModel> CreateUser(NewUserModelDTO user)
+        public async Task<UserModel> CreateUser(NewUserModelDTO newUser)
         {
             try
             {
-                var exisitingUser = await _databaseUser.FindAsync(user => user.UserName == user.UserName);
+                var exisitingUser = await _databaseUser.FindAsync(user => user.UserName == newUser.UserName);
 
                 if(exisitingUser.ToList().Count == 0)
                 {
-                    string hashedPass = BC.HashPassword(user.UserSecret);
+                    string hashedPass = BC.HashPassword(newUser.UserSecret);
 
                     Console.WriteLine(hashedPass);
 
                     await _databaseUser.InsertOneAsync(new UserModel
                     {
-                        UserName = user.UserName,
+                        UserName = newUser.UserName,
                         UserSecret = hashedPass,
                         UserRole = "basic"
                     });
 
-                    var queryUser = await VerifyUser(user.UserName, hashedPass);
+                    var queryUser = await VerifyUser(newUser.UserName, hashedPass);
 
                     return queryUser;
                 }
@@ -117,7 +117,7 @@ namespace VinylAppApi.DataAccess.DbManager
             }
         }
 
-        public async Task<bool> UpdatePassword(string id, string newPass)
+        public async Task<bool> UpdatePassword(string id, string newPass, string oldPass)
         {
             try
             {
