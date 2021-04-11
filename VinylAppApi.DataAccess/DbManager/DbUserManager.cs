@@ -117,7 +117,7 @@ namespace VinylAppApi.DataAccess.DbManager
             }
         }
 
-        public async Task<bool> UpdatePassword(string id, string newPass, string oldPass)
+        public async Task<bool> UpdatePassword(string id, string newPass)
         {
             try
             {

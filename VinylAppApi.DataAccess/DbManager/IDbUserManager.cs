@@ -9,7 +9,7 @@ namespace VinylAppApi.DataAccess.DbManager
         Task<UserModel> QueryUserById(string id);
         Task<UserModel> QueryUserByName(string userName);
         Task<UserModel> VerifyUser(string userName, string userPassword);
-        Task<UserModel> CreateUser(NewUserModelDTO user);
+        Task<UserModel> CreateUser(NewUserModelDTO newUser);
         Task<bool> UpdatePassword(string id, string newPass);
     }
 }
