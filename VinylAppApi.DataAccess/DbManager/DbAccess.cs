@@ -20,6 +20,7 @@ namespace VinylAppApi.DataAccess.DbManager
     {
         private readonly IMongoCollection<OwnedAlbumModel> _ownedAlbums;
         private readonly IMongoCollection<UserModel> _databaseUser;
+        private readonly IMongoCollection<GroupModel> _userGroup;
 
         private readonly IDbUserManager _userManager;
 
@@ -36,6 +37,7 @@ namespace VinylAppApi.DataAccess.DbManager
 
             _ownedAlbums = _dbClient.AlbumCollection();
             _databaseUser = _dbClient.UsersCollection();
+            _userGroup = _dbClient.GroupCollection();
         }
 
         public async Task<List<OwnedAlbumModel>> GetAllOwnedAlbumModelsAsync(string id)
@@ -51,9 +53,7 @@ namespace VinylAppApi.DataAccess.DbManager
         }
 
         public async Task<List<OwnedAlbumModel>> GetAlbumByUserId(string userId)
-        {
-            // Depreciated, should be removed sine it is now default action.
-           
+        {           
             var user = await _userManager.QueryUserById(userId);
 
             var albumByUserIdList = await _ownedAlbums.FindAsync(album => album.User == user.UserName);
@@ -129,9 +129,7 @@ namespace VinylAppApi.DataAccess.DbManager
                         .Set("rating", userAlbumChanges.Rating)
                 );
             }
-
             _logger.LogDebug("<------ Update Albums Success ------>");
-
         }
 
         public async Task DeleteAlbumByIdAsync(string userId, string id)
@@ -144,6 +142,26 @@ namespace VinylAppApi.DataAccess.DbManager
             }
 
             _logger.LogDebug("<------ Deleted Albums Success ------>");
+        }
+
+        public async Task<List<JoinedGroupsDTO>> GetAllGroupAlbums(string currentUserId)
+        {
+            var listOfGroupAlbums = new List<JoinedGroupsDTO>();
+            var listOfUserGroups = (await _userGroup.FindAsync(group => group.Users.Contains(currentUserId))).ToList();
+
+            foreach(var group in listOfUserGroups)
+            {
+                var userAlbums = await GetAlbumByUserId(group.Id);
+                var newGroupItem = new JoinedGroupsDTO
+                {
+                    GroupName = group.GroupName,
+                    GroupAlbums = userAlbums
+                };
+
+                listOfGroupAlbums.Add(newGroupItem);
+            }
+
+            return listOfGroupAlbums;
         }
     }
 }

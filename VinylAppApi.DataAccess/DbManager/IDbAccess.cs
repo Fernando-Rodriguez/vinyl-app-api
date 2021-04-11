@@ -13,5 +13,6 @@ namespace VinylAppApi.DataAccess.DbManager
         Task PostAlbumAsync(AlbumUpdateModelDTO userInputAlbum);
         Task UpdateAlbumAsync(string userId, string id, AlbumUpdateModelDTO userAlbumChanges);
         Task<List<OwnedAlbumModel>> GetAlbumByUserId(string userId);
+        Task<List<JoinedGroupsDTO>> GetAllGroupAlbums(string currentUserId);
     }
 }

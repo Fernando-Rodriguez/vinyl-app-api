@@ -8,5 +8,6 @@ namespace VinylAppApi.DataAccess.DbManager
     {
         IMongoCollection<OwnedAlbumModel> AlbumCollection();
         IMongoCollection<UserModel> UsersCollection();
+        IMongoCollection<GroupModel> GroupCollection();
     }
 }
