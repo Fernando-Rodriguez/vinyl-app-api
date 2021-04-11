@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VinylAppApi.DataAccess.DbManager;
@@ -7,6 +8,8 @@ using VinylAppApi.Helpers;
 
 namespace VinylAppApi.Controllers
 {
+    [Route("v1/api/[controller]")]
+    [Authorize]
     public class GroupController : Controller
     {
         private readonly IDbAccess _dbAccess;
