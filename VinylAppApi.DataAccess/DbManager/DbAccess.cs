@@ -84,7 +84,7 @@ namespace VinylAppApi.DataAccess.DbManager
 
         public async Task PostAlbumAsync(AlbumUpdateModelDTO userInputAlbum)
         {
-            var checkIfAblumInDB = await _ownedAlbums.FindAsync(album => album.Album == userInputAlbum.Album);
+            var checkIfAblumInDB = await _ownedAlbums.FindAsync(album => album.Album == userInputAlbum.Album && album.User == userInputAlbum.User);
 
             var albumsChecked = checkIfAblumInDB.ToList();
 

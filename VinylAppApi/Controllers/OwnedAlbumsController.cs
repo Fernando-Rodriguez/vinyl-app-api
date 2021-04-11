@@ -34,7 +34,6 @@ namespace VinylAppApi.Controllers
             {
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
-
                 var dbResponse = await _dbAccess.GetAllOwnedAlbumModelsAsync(localUser.UserId);
 
                 _logger.LogDebug("OwnedAlbums has been called");
@@ -116,12 +115,23 @@ namespace VinylAppApi.Controllers
             }
         }
 
-        [HttpDelete("{userId}/{id}")]
-        public async Task<IActionResult> Delete(string userId, string id)
+        /// <summary>
+        /// This method should not require any user input because it doesn't
+        /// make sense for a random user to be able to alter someone else's
+        /// list of albums by manipulating the url. It should pull the user
+        /// id from the token!
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(string id)
         {
             try
             {
-                await _dbAccess.DeleteAlbumByIdAsync(userId, id);
+                var localCtx = HttpContext;
+                var localUser = await _helper.RetrieveUser(localCtx);
+                await _dbAccess.DeleteAlbumByIdAsync(localUser.UserId, id);
                 return Ok();
             }
             catch(Exception e)
