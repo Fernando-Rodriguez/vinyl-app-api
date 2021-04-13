@@ -31,7 +31,6 @@ namespace VinylAppApi.DataAccess.DbManager
         public async Task<UserModel> QueryUserById(string id)
         {
             var userQueryId = await _databaseUser.FindAsync(user => user.Id == id);
-
             return userQueryId.FirstOrDefault();
         }
 
