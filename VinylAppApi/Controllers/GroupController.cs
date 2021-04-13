@@ -14,7 +14,7 @@ namespace VinylAppApi.Controllers
     {
         private readonly IDbAccess _dbAccess;
         private readonly ILogger<GroupController> _logger;
-        private IUserTokenHelper _helper;
+        private readonly IUserTokenHelper _helper;
 
         public GroupController(ILogger<GroupController> logger, IUserTokenHelper helper, IDbAccess dbAccess)
         {
@@ -30,10 +30,8 @@ namespace VinylAppApi.Controllers
             {
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
-                var joinedGroups = _dbAccess.GetAllGroupAlbums(localUser.UserId);
-
-                return Ok(joinedGroups);
-
+                var joinedGroupsAlbums = await _dbAccess.GetAllGroupAlbums(localUser.UserId);
+                return Ok(joinedGroupsAlbums);
             }
             catch (Exception err)
             {
@@ -41,5 +39,5 @@ namespace VinylAppApi.Controllers
                 return StatusCode(500);
             }
         }
-    }
+    } 
 }
