@@ -141,9 +141,9 @@ namespace VinylAppApi.DataAccess.DbManager
 
             _logger.LogDebug("Retrieving group data.");
 
-            var listOfUserGroups = await GetGroupIdsAndNames(currentUserId);
+            var listOfUserGroups = await _userGroup.FindAsync(group => group.Users.Contains(currentUserId));
 
-            foreach(var group in listOfUserGroups)
+            foreach (var group in listOfUserGroups.ToList())
             {
                 var listOfUserAblums = new List<OwnedAlbumModel>();
 
@@ -151,6 +151,9 @@ namespace VinylAppApi.DataAccess.DbManager
                 {
                     if (user != currentUserId)
                     {
+                        // It only makes sense to send the albums that the
+                        // user doesn't have, otherwise, they would recieve
+                        // a repeated list of data, which wouldn't be useful.
                         var userAlbums = await GetAlbumByUserId(user);
                         listOfUserAblums.AddRange(userAlbums);
                     }
@@ -163,19 +166,12 @@ namespace VinylAppApi.DataAccess.DbManager
                     GroupAlbums = listOfUserAblums
                 };
 
-                _logger.LogDebug("Adding group to list.");
+                _logger.LogDebug("Adding group to output list.");
 
                 listOfGroupAlbums.Add(newGroupItem);
             }
 
             return listOfGroupAlbums;
-        }
-
-        public async Task<List<GroupModel>> GetGroupIdsAndNames(string currentUserId)
-        {
-            var listOfUserGroups = await _userGroup.FindAsync(group => group.Users.Contains(currentUserId));
-
-            return listOfUserGroups.ToList();
         }
     }
 }

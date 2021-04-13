@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using VinylAppApi.Shared.Models.AuthorizationModels;
-using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using VinylAppApi.Shared.Models.AuthorizationModels;
 
 namespace VinylAppApi.Authorization.AuthorizationManager
 {
@@ -70,7 +70,7 @@ namespace VinylAppApi.Authorization.AuthorizationManager
 
         public string TokenGeneration(IAuthContainerModel model)
         {
-            if(model == null || model.Claims == null || model.Claims.Length == 0)
+            if (model == null || model.Claims == null || model.Claims.Length == 0)
             {
                 throw new ArgumentException("arguments to create token are not valid.");
             }
@@ -93,9 +93,7 @@ namespace VinylAppApi.Authorization.AuthorizationManager
             return token;
         }
 
-
         //Private methods that create the key and set validation parameters;
-
         private SecurityKey GetSymmetricSecurityKey()
         {
             byte[] symmetricKey = Encoding.UTF8.GetBytes(SecretKey);
