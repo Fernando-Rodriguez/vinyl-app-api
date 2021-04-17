@@ -20,6 +20,5 @@
     <Folder Include="Models\SpotifyModels\AlbumModels\" />
     <Folder Include="Models\AuthorizationModels\" />
     <Folder Include="Models\UserInterfacingModels\" />
-    <Folder Include="Models\BaseModels\" />
   </ItemGroup>
 </Project>

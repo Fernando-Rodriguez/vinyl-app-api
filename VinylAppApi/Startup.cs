@@ -43,7 +43,6 @@ namespace VinylAppApi
 
             services.AddSwaggerGen();
             services.AddControllers();
-
             services.AddScoped<IDbAccess, DbAccess>();
             services.AddScoped<ISpotifyRequest, SpotifyRequest>();
             services.AddScoped<IMatchUpData, MatchUpData>();
@@ -52,6 +51,7 @@ namespace VinylAppApi
             services.AddScoped<IAuthService, JwtService>();
             services.AddScoped<IAuthorizationVerification, AuthorizationVerification>();
             services.AddScoped<IUserTokenHelper, UserTokenHelper>();
+            //services.AddScoped<IDbGroupAccess, DbGroupAccess>();
 
             services.AddSingleton<ITokenManager, TokenManager>();
             services.AddSingleton<IDbClient, DbClient>();
