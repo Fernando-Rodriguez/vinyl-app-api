@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinylAppApi.Authorization",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinylAppApi.SpotifyHandler", "VinylAppApi.SpotifyHandler\VinylAppApi.SpotifyHandler.csproj", "{35E8125F-0FC6-4098-8AEF-D8E7111119D6}"
 EndProject
-Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "VinylAppApi.DataAccess", "VinylAppApi.DataAccess\VinylAppApi.DataAccess.csproj", "{1545C51B-4963-4E02-BF64-B9D63633E836}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinylAppApi.DataAccess", "VinylAppApi.DataAccess\VinylAppApi.DataAccess.csproj", "{1545C51B-4963-4E02-BF64-B9D63633E836}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

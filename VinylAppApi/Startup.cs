@@ -11,6 +11,8 @@ using VinylAppApi.DataAccess.DataCoordinationManager;
 using VinylAppApi.Shared.Models.AuthorizationModels;
 using VinylAppApi.SpotifyHandler.SpotifyApiManager;
 using VinylAppApi.Helpers;
+using VinylAppApi.DataAccess.Repository;
+using VinylAppApi.DataAccess.Entities;
 
 namespace VinylAppApi
 {
@@ -51,7 +53,7 @@ namespace VinylAppApi
             services.AddScoped<IAuthService, JwtService>();
             services.AddScoped<IAuthorizationVerification, AuthorizationVerification>();
             services.AddScoped<IUserTokenHelper, UserTokenHelper>();
-            //services.AddScoped<IDbGroupAccess, DbGroupAccess>();
+            services.AddScoped(typeof(IMongoRepo<>), typeof(MongoRepo<>));
 
             services.AddSingleton<ITokenManager, TokenManager>();
             services.AddSingleton<IDbClient, DbClient>();

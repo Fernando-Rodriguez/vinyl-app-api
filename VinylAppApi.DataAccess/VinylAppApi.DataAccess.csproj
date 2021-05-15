@@ -5,8 +5,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="DataCoordinationManager\" />
     <Folder Include="DbManager\" />
+    <Folder Include="Services\" />
+    <Folder Include="Services\DataCoordinationManager\" />
+    <Folder Include="Services\GroupService\" />
+    <Folder Include="Services\UserService\" />
+    <Folder Include="Services\AlbumService\" />
+    <Folder Include="Repository\" />
+    <Folder Include="Entities\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VinylAppApi.SpotifyHandler\VinylAppApi.SpotifyHandler.csproj" />

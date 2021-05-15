@@ -8,6 +8,9 @@ using VinylAppApi.Authorization.AuthorizationManager;
 using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.Shared.Models.UserInterfacingModels;
 using VinylAppApi.Helpers;
+using VinylAppApi.DataAccess.Repository;
+using VinylAppApi.DataAccess.Entities;
+
 namespace VinylAppApi.Controllers
 {
     [Route("v1/api/[controller]")]
@@ -18,13 +21,20 @@ namespace VinylAppApi.Controllers
         private IAuthService _authService;
         private IUserTokenHelper _helper;
         private readonly IDbUserManager _userManager;
+        private readonly IMongoRepo<User> _users;
 
-        public UsersController(ILogger<UsersController> logger, IAuthService authService, IDbUserManager userManager, IUserTokenHelper helper)
+        public UsersController(
+            ILogger<UsersController> logger,
+            IAuthService authService,
+            IDbUserManager userManager,
+            IUserTokenHelper helper,
+            IMongoRepo<User> users)
         {
             _logger = logger;
             _authService = authService;
             _userManager = userManager;
             _helper = helper;
+            _users = users;
         }
 
         [HttpGet]
