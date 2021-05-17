@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.DataAccess.DbManager;
+using VinylAppApi.Domain.Repository.UnitOfWork;
+using VinylAppApi.Domain.Services.GroupService;
 using VinylAppApi.Helpers;
 
 namespace VinylAppApi.Controllers
@@ -12,15 +13,21 @@ namespace VinylAppApi.Controllers
     [Authorize]
     public class GroupController : Controller
     {
-        private readonly IDbAccess _dbAccess;
         private readonly ILogger<GroupController> _logger;
         private readonly IUserTokenHelper _helper;
+        private readonly IGroupService _groupService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public GroupController(ILogger<GroupController> logger, IUserTokenHelper helper, IDbAccess dbAccess)
+        public GroupController(
+            ILogger<GroupController> logger,
+            IUserTokenHelper helper,
+            IGroupService groupService,
+            IUnitOfWork unitOfWork)
         {
             _logger = logger;
-            _dbAccess = dbAccess;
             _helper = helper;
+            _groupService = groupService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -30,8 +37,8 @@ namespace VinylAppApi.Controllers
             {
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
-                var joinedGroupsAlbums = await _dbAccess.GetAllGroupAlbums(localUser.UserId);
-                return Ok(joinedGroupsAlbums);
+                var joinedGroupAlbums = await _groupService.RetrieveGroups(localUser.UserId, _unitOfWork);
+                return Ok(joinedGroupAlbums);
             }
             catch (Exception err)
             {
@@ -39,5 +46,6 @@ namespace VinylAppApi.Controllers
                 return StatusCode(500);
             }
         }
+        // TODO: add methods to delete groups, add members to groups, remove members from groups.
     } 
 }

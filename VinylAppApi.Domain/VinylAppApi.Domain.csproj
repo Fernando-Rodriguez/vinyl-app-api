@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+    <Folder Include="Services\GroupService\" />
+    <Folder Include="Services\UserService\" />
+    <Folder Include="Services\AlbumService\" />
+    <Folder Include="Repository\" />
+    <Folder Include="Services\AlbumService\DataCoordinationManager\" />
+    <Folder Include="Services\AuthorizationService\" />
+    <Folder Include="Services\MusicInformationService\" />
+    <Folder Include="Models\" />
+    <Folder Include="Models\AuthorizationModels\" />
+    <Folder Include="Models\SpotifyModels\" />
+    <Folder Include="Models\UserInterfacingModels\" />
+    <Folder Include="Models\Entities\" />
+    <Folder Include="Repository\UnitOfWork\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.13.0-beta1" />
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.0-preview.3.21201.4" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0-preview.3.21201.4" />
+  </ItemGroup>
+</Project>

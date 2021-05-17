@@ -1,30 +1,34 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.Authorization.AuthorizationManager;
-using VinylAppApi.DataAccess.DbManager;
-using VinylAppApi.Shared.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Repository.UnitOfWork;
+using VinylAppApi.Domain.Services.UserService;
 using VinylAppApi.Helpers;
+
 namespace VinylAppApi.Controllers
 {
     [Route("v1/api/[controller]")]
     [Authorize]
     public class UsersController : Controller
     {
-        private ILogger<UsersController> _logger;
-        private IAuthService _authService;
-        private IUserTokenHelper _helper;
-        private readonly IDbUserManager _userManager;
+        private readonly ILogger<UsersController> _logger;
+        private readonly IUserTokenHelper _helper;
+        private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public UsersController(ILogger<UsersController> logger, IAuthService authService, IDbUserManager userManager, IUserTokenHelper helper)
+        public UsersController(
+            ILogger<UsersController> logger,
+            IUserTokenHelper helper,
+            IUserService userService,
+            IUnitOfWork unitOfWork)
         {
             _logger = logger;
-            _authService = authService;
-            _userManager = userManager;
             _helper = helper;
+            _userService = userService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -33,7 +37,6 @@ namespace VinylAppApi.Controllers
             try
             {
                 var myContext = HttpContext;
-
                 var myNewResult = await _helper.RetrieveUser(myContext);
            
                 return Ok(myNewResult);
@@ -42,23 +45,22 @@ namespace VinylAppApi.Controllers
             {
                 _logger.LogError($"Error getting user: {err}");
                 return StatusCode(500);
-            }
-            
+            }   
         }
 
         [AllowAnonymous]
         [HttpPost("new")]
-        public async Task<IActionResult> CreateNewUser([FromBody] NewUserModelDTO user)
+        public async Task<IActionResult> CreateNewUser([FromBody] LoginDTO user)
         {
             try
             {
-                var newUser = await _userManager.CreateUser(user);
-
-                return Ok(new UserInfoModelDTO
+                if(!string.IsNullOrEmpty(user.UserName) || !string.IsNullOrEmpty(user.UserSecret))
                 {
-                    UserName = newUser.UserName,
-                    UserId = newUser.Id
-                });
+                   var finalizedNewUser = await _userService.CreateNewUser(user, _unitOfWork);
+                   return Ok(finalizedNewUser);
+                }
+
+                return BadRequest();
             }
             catch(Exception err)
             {

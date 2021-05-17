@@ -5,12 +5,18 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using VinylAppApi.Authorization.AuthorizationManager;
-using VinylAppApi.DataAccess.DbManager;
-using VinylAppApi.DataAccess.DataCoordinationManager;
-using VinylAppApi.Shared.Models.AuthorizationModels;
-using VinylAppApi.SpotifyHandler.SpotifyApiManager;
+using VinylAppApi.Domain.Services.AuthorizationService;
+using VinylAppApi.Domain.Services.AlbumService.DataCoordinationManager;
+using VinylAppApi.Domain.Models.AuthorizationModels;
+using VinylAppApi.Domain.Services.MusicInformationService;
 using VinylAppApi.Helpers;
+using VinylAppApi.Domain.Repository;
+using VinylAppApi.Domain.Services.UserService;
+using VinylAppApi.Domain.Services.AlbumService;
+using VinylAppApi.Domain.Services.GroupService;
+using VinylAppApi.Domain.Repository.UnitOfWork;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Threading.Tasks;
 
 namespace VinylAppApi
 {
@@ -23,38 +29,52 @@ namespace VinylAppApi
 
         private IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication("OAuth").AddJwtBearer("OAuth", opts =>
-            {
-                byte[] symmetricKey = Encoding.UTF8
-                .GetBytes(Configuration.GetSection("ServerCredentials").ToString());
-
-                var key =  new SymmetricSecurityKey(symmetricKey);
-
-                opts.TokenValidationParameters = new TokenValidationParameters()
+            services
+                .AddAuthentication("OAuth")
+                .AddCookie(config =>
                 {
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                    IssuerSigningKey = key
-                };
-            });
+                    config.Cookie.HttpOnly = true;
+                    config.Cookie.Name = "vinyl_app";
+                })
+                .AddJwtBearer("OAuth", opts =>
+                {
+                    byte[] symmetricKey = Encoding.UTF8
+                    .GetBytes(Configuration.GetSection("ServerCredentials").ToString());
+
+                    var key =  new SymmetricSecurityKey(symmetricKey);
+
+                    opts.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateAudience = false,
+                        ValidateIssuer = false,
+                        IssuerSigningKey = key
+                    };
+
+                    opts.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            context.Token = context.Request.Cookies["_bearer"];
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
 
             services.AddSwaggerGen();
             services.AddControllers();
-
-            services.AddScoped<IDbAccess, DbAccess>();
             services.AddScoped<ISpotifyRequest, SpotifyRequest>();
             services.AddScoped<IMatchUpData, MatchUpData>();
-            services.AddScoped<IDbUserManager, DbUserManager>();
             services.AddScoped<IAuthContainerModel, JwtContainerModel>();
             services.AddScoped<IAuthService, JwtService>();
-            services.AddScoped<IAuthorizationVerification, AuthorizationVerification>();
             services.AddScoped<IUserTokenHelper, UserTokenHelper>();
-
+            services.AddScoped(typeof(IMongoRepo<>), typeof(MongoRepo<>));
             services.AddSingleton<ITokenManager, TokenManager>();
-            services.AddSingleton<IDbClient, DbClient>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAlbumService, AlbumService>();
+            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

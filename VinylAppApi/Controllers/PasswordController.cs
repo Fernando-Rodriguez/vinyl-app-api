@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.DataAccess.DbManager;
+using VinylAppApi.Domain.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Repository.UnitOfWork;
+using VinylAppApi.Domain.Services.UserService;
 using VinylAppApi.Helpers;
-using VinylAppApi.Shared.Models.UserInterfacingModels;
 
 namespace VinylAppApi.Controllers
 {
@@ -13,18 +14,19 @@ namespace VinylAppApi.Controllers
     [Authorize]
     public class PasswordController : Controller
     {
-        private readonly IDbUserManager _user;
         private readonly IUserTokenHelper _userHelper;
         private readonly ILogger<PasswordController> _logger;
+        private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public PasswordController(
             ILogger<PasswordController> logger,
-            IDbUserManager user,
-            IUserTokenHelper userHelper)
+            IUserTokenHelper userHelper,
+            IUnitOfWork unitOfWork)
         {
             _logger = logger;
-            _user = user;
             _userHelper = userHelper;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -33,9 +35,15 @@ namespace VinylAppApi.Controllers
             try
             {
                 var myContext = HttpContext;
-                var myNewResult = await _userHelper.RetrieveUser(myContext);
+                var localUser = await _userHelper.RetrieveUser(myContext);
+                var userReqChange = await _unitOfWork.Users.FindByIdAsync(localUser.UserId);
 
-                var passUpdate = await _user.UpdatePassword(myNewResult.UserId, newPass.UpdatePass);
+                await _userService.UpdatePassword(new LoginDTO
+                {
+                    UserName = userReqChange.UserName,
+                    UserSecret = userReqChange.UserSecret
+                }, newPass.UpdatePass, _unitOfWork);
+
                 _logger.LogDebug("user password updated.");
                 return Ok();
             }
