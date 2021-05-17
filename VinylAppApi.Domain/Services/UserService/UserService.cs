@@ -131,7 +131,7 @@ namespace VinylAppApi.Domain.Services.UserService
                 return new string[] { userSpecificToken, userSpecificRefresh };
             }
 
-            throw new Exception("Usename/Password unable to be verified.");
+            throw new ArgumentException("Usename/Password unable to be verified.");
         }
 
         public async Task<string> GenerateTokenWithRefreshToken(string refreshToken, IUnitOfWork unitOfWork)
@@ -154,7 +154,7 @@ namespace VinylAppApi.Domain.Services.UserService
                 return userSpecificToken;
             }
 
-            throw new Exception("Refresh token not found.");
+            throw new ArgumentException("Refresh token not found.");
         }
     }
 }
