@@ -56,7 +56,7 @@ namespace VinylAppApi.Domain.Services.UserService
 
         public async Task<bool> VerifyUser(UserModelDTO user, IMongoRepo<UserModel> users)
         {
-            var userQuery = (await users.FindOneAsync(dbUser => dbUser.UserName == user.UserName));
+            var userQuery = await users.FindOneAsync(dbUser => dbUser.UserName == user.UserName);
 
             bool isVerified = false;
 

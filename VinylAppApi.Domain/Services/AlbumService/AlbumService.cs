@@ -18,7 +18,7 @@ namespace VinylAppApi.Domain.Services.AlbumService
             _matchUpData = matchUpData;
         }
 
-        public async Task AddNewAlbumAsync(AlbumUpdateModelDTO userInputAlbum, MongoRepo<AlbumModel> _albums)
+        public async Task AddNewAlbumAsync(AlbumUpdateModelDTO userInputAlbum, IMongoRepo<AlbumModel> _albums)
         {
             var checkIfAblumInDB = await _albums
                 .FindOneAsync(album => album.Album == userInputAlbum.Album

@@ -31,7 +31,7 @@ namespace VinylAppApi.Domain.Services.AuthorizationService
                 UserSecret = userSecret
             }, users);
 
-            var userInformation = await users.FindOneAsync(user => user.UserName == userName && user.UserSecret == userSecret);
+            var userInformation = await users.FindOneAsync(user => user.UserName == userName);
 
             if(userResults)
             {

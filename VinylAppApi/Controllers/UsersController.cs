@@ -38,7 +38,6 @@ namespace VinylAppApi.Controllers
             try
             {
                 var myContext = HttpContext;
-
                 var myNewResult = await _helper.RetrieveUser(myContext);
            
                 return Ok(myNewResult);

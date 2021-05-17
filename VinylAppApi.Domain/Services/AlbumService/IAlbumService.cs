@@ -7,6 +7,6 @@ namespace VinylAppApi.Domain.Services.AlbumService
 {
     public interface IAlbumService
     {
-        Task AddNewAlbumAsync(AlbumUpdateModelDTO userInputAlbum, MongoRepo<AlbumModel> _albums);
+        Task AddNewAlbumAsync(AlbumUpdateModelDTO userInputAlbum, IMongoRepo<AlbumModel> _albums);
     }
 }

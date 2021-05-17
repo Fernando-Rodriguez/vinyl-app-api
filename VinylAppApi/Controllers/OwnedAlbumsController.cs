@@ -3,8 +3,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.Helpers;
+using VinylAppApi.Domain.Entities;
 using VinylAppApi.Domain.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Repository;
+using VinylAppApi.Domain.Services.AlbumService;
+using VinylAppApi.Helpers;
 
 namespace VinylAppApi.Controllers
 {
@@ -14,13 +17,22 @@ namespace VinylAppApi.Controllers
     {
         private readonly ILogger<OwnedAlbumsController> _logger;
         private IUserTokenHelper _helper;
+        private readonly IMongoRepo<AlbumModel> _albums;
+        private readonly IMongoRepo<UserModel> _users;
+        private readonly IAlbumService _albumService;
 
         public OwnedAlbumsController(
             ILogger<OwnedAlbumsController> logger,
-            IUserTokenHelper helper)
+            IUserTokenHelper helper,
+            IMongoRepo<AlbumModel> albums,
+            IMongoRepo<UserModel> users,
+            IAlbumService albumService)
         {
             _logger = logger;
             _helper = helper;
+            _albums = albums;
+            _users = users;
+            _albumService = albumService;
         }
 
         [HttpGet]
@@ -30,17 +42,15 @@ namespace VinylAppApi.Controllers
             {
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
-                
-                // var dbResponse = await _dbAccess.GetAllOwnedAlbumModelsAsync(localUser.UserId);
 
+                var dbRes = await _albums.FilterByAsync(album => album.User == localUser.UserName);
+                
                 _logger.LogDebug("OwnedAlbums has been called");
 
-                //return Ok(new AlbumsDTO
-                //{
-                //    Owned_Albums = dbResponse
-                //});
-
-                return Ok();
+                return Ok(new AlbumsDTO
+                {
+                    Owned_Albums = dbRes
+                });
             }
             catch (Exception err)
             {
@@ -49,30 +59,19 @@ namespace VinylAppApi.Controllers
             }
         }
 
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> Get(string userId)
-        {
-            // var dbResponse = await _dbAccess.GetAlbumByUserId(userId);
-
-            //return Ok(new AlbumsDTO
-            //{
-            //    Owned_Albums = dbResponse
-            //});
-
-            return Ok();
-
-        }
-
-        [HttpGet("{userId}/{id}")]
-        public async Task<IActionResult> Get(string userId, string id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(string id)
         {
             try
             {
-                // var response = await _dbAccess.GetAlbumModelByIdAsync(userId, id);
+                var localCtx = HttpContext;
+                var localUser = await _helper.RetrieveUser(localCtx);
+
+                var resDb = await _albums.FindByIdAsync(id);
 
                 _logger.LogDebug("OwnedAlbums has been called");
 
-                return Ok();
+                return Ok(resDb);
             }
             catch (Exception err)
             {
@@ -86,11 +85,18 @@ namespace VinylAppApi.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] AlbumUpdateModelDTO userInput)
         {
+            if (string.IsNullOrEmpty(userInput.Id)
+                || string.IsNullOrEmpty(userInput.Album)
+                || string.IsNullOrEmpty(userInput.Artist)
+                || string.IsNullOrEmpty(userInput.User))
+            {
+                return BadRequest();
+            }
+
             try
             {
-                //await _dbAccess.PostAlbumAsync(userInput);
+                await _albumService.AddNewAlbumAsync(userInput, _albums);
                 return Ok();
-
             }
             catch (Exception err)
             {
@@ -100,12 +106,26 @@ namespace VinylAppApi.Controllers
             }
         }
 
-        [HttpPut("{userId}/{id}")]
-        public async Task<IActionResult> Update([FromBody] AlbumUpdateModelDTO userInput, string id, string userId)
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] AlbumUpdateModelDTO userInput)
         {
+            if (string.IsNullOrEmpty(userInput.Id)
+                || string.IsNullOrEmpty(userInput.Album)
+                || string.IsNullOrEmpty(userInput.Artist)
+                || string.IsNullOrEmpty(userInput.User))
+            {
+                return BadRequest();
+            }
+
             try
             {
-                //await _dbAccess.UpdateAlbumAsync(userId, id, userInput);
+                var albumToUpdate = await _albums.FindByIdAsync(userInput.Id);
+
+                albumToUpdate.Album = userInput.Album;
+                albumToUpdate.Artist = userInput.Artist;
+                albumToUpdate.Rating = userInput.Rating;
+
+                await _albums.ReplaceOneAsync(albumToUpdate);
 
                 return Ok();
             }
@@ -129,11 +149,17 @@ namespace VinylAppApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(string id)
         {
+            if (string.IsNullOrEmpty(id)) return BadRequest();
+
             try
             {
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
-                //await _dbAccess.DeleteAlbumByIdAsync(localUser.UserId, id);
+
+                var albumToDelete = await _albums.FindOneAsync(album => album.Id.ToString() == id && album.User == localUser.UserName);
+
+                await _albums.DeleteOneAsync(album => album == albumToDelete);
+
                 return Ok();
             }
             catch(Exception e)
