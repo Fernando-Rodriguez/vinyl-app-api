@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using VinylAppApi.Domain.Entities;
-using VinylAppApi.Domain.Repository;
 using VinylAppApi.Domain.Models.UserInterfacingModels;
 using VinylAppApi.Domain.Repository.UnitOfWork;
 

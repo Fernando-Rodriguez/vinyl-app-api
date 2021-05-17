@@ -52,15 +52,7 @@ namespace VinylAppApi.Domain.Services.MusicInformationService
         {
             if (string.IsNullOrEmpty(_tokenManager._pToken))
             {
-                try
-                {
-                    await _tokenManager.TestContact();
-                }
-                catch (Exception e)
-                {
-                    _logger.LogDebug($"Error {e} at Token Gen.");
-                }
-
+                await _tokenManager.TestContact();
             }
 
             var response = await Search(searchAlbum);

@@ -17,6 +17,7 @@ using VinylAppApi.Domain.Services.GroupService;
 using VinylAppApi.Domain.Repository.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace VinylAppApi
 {
@@ -84,6 +85,13 @@ namespace VinylAppApi
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            var cookiePolicy = new CookiePolicyOptions
+            {
+                MinimumSameSitePolicy = SameSiteMode.Lax
+            };
+
+            app.UseCookiePolicy(cookiePolicy);
 
             app.UseSwagger();
 
