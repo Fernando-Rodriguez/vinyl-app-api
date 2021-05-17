@@ -1,10 +1,10 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.Authorization.AuthorizationManager;
-using VinylAppApi.Shared.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Entities;
+using VinylAppApi.Domain.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Repository;
+using VinylAppApi.Domain.Services.AuthorizationService;
 
 namespace VinylAppApi.Controllers
 {
@@ -13,17 +13,22 @@ namespace VinylAppApi.Controllers
     {
         private IAuthorizationVerification _verify;
         private ILogger<TokenController> _logger;
+        private readonly IMongoRepo<UserModel> _users;
 
-        public TokenController(IAuthorizationVerification verify, ILogger<TokenController> logger)
+        public TokenController(
+            IAuthorizationVerification verify,
+            ILogger<TokenController> logger,
+            IMongoRepo<UserModel> users)
         {
             _verify = verify;
             _logger = logger;
+            _users = users;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] TokenRequestDTO requestTokenInfo)
+        public async Task<IActionResult> Post([FromBody] UserModelDTO requestTokenInfo)
         {
-            if (string.IsNullOrEmpty(requestTokenInfo.ClientName) || string.IsNullOrEmpty(requestTokenInfo.ClientSecret))
+            if (string.IsNullOrEmpty(requestTokenInfo.UserName) || string.IsNullOrEmpty(requestTokenInfo.UserSecret))
             {
                 return BadRequest();
             }
@@ -31,11 +36,12 @@ namespace VinylAppApi.Controllers
             {
                 var tokenResponse = await _verify
                     .UserVerifcationWithIdAndSecret(
-                        requestTokenInfo.ClientName,
-                        requestTokenInfo.ClientSecret
+                        requestTokenInfo.UserName,
+                        requestTokenInfo.UserSecret,
+                        _users
                     );
 
-                _logger.LogDebug($"user {requestTokenInfo.ClientName} request token");
+                _logger.LogDebug($"user {requestTokenInfo.UserName} request token");
 
                 return Ok(tokenResponse);
             }

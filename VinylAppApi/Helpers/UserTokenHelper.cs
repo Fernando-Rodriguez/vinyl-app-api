@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.Authorization.AuthorizationManager;
-using VinylAppApi.DataAccess.DbManager;
-using VinylAppApi.Shared.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Services.AuthorizationService;
+using VinylAppApi.Domain.Models.UserInterfacingModels;
 
 namespace VinylAppApi.Helpers
 {
@@ -12,16 +11,13 @@ namespace VinylAppApi.Helpers
     {
         private ILogger<UserTokenHelper> _logger;
         private IAuthService _authService;
-        private readonly IDbUserManager _userManager;
 
         public UserTokenHelper(
             ILogger<UserTokenHelper> logger,
-            IAuthService authService,
-            IDbUserManager userManager)
+            IAuthService authService)
         {
             _logger = logger;
             _authService = authService;
-            _userManager = userManager;
         }
 
         public async Task<UserInfoModelDTO> RetrieveUser(HttpContext context)

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using VinylAppApi.Shared.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Models.UserInterfacingModels;
 
 namespace VinylAppApi.Helpers
 {

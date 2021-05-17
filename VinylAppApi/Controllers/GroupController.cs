@@ -3,7 +3,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.Helpers;
 
 namespace VinylAppApi.Controllers
@@ -12,14 +11,12 @@ namespace VinylAppApi.Controllers
     [Authorize]
     public class GroupController : Controller
     {
-        private readonly IDbAccess _dbAccess;
         private readonly ILogger<GroupController> _logger;
         private readonly IUserTokenHelper _helper;
 
-        public GroupController(ILogger<GroupController> logger, IUserTokenHelper helper, IDbAccess dbAccess)
+        public GroupController(ILogger<GroupController> logger, IUserTokenHelper helper)
         {
             _logger = logger;
-            _dbAccess = dbAccess;
             _helper = helper;
         }
 
@@ -30,8 +27,8 @@ namespace VinylAppApi.Controllers
             {
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
-                var joinedGroupsAlbums = await _dbAccess.GetAllGroupAlbums(localUser.UserId);
-                return Ok(joinedGroupsAlbums);
+                //var joinedGroupsAlbums = await _dbAccess.GetAllGroupAlbums(localUser.UserId);
+                return Ok();
             }
             catch (Exception err)
             {

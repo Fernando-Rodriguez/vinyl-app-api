@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.DataAccess.DbManager;
 using VinylAppApi.Helpers;
-using VinylAppApi.Shared.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Models.UserInterfacingModels;
 
 namespace VinylAppApi.Controllers
 {
@@ -13,17 +12,14 @@ namespace VinylAppApi.Controllers
     [Authorize]
     public class OwnedAlbumsController : Controller
     {
-        private readonly IDbAccess _dbAccess;
         private readonly ILogger<OwnedAlbumsController> _logger;
         private IUserTokenHelper _helper;
 
         public OwnedAlbumsController(
             ILogger<OwnedAlbumsController> logger,
-            IDbAccess dbAccess,
             IUserTokenHelper helper)
         {
             _logger = logger;
-            _dbAccess = dbAccess;
             _helper = helper;
         }
 
@@ -34,14 +30,17 @@ namespace VinylAppApi.Controllers
             {
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
-                var dbResponse = await _dbAccess.GetAllOwnedAlbumModelsAsync(localUser.UserId);
+                
+                // var dbResponse = await _dbAccess.GetAllOwnedAlbumModelsAsync(localUser.UserId);
 
                 _logger.LogDebug("OwnedAlbums has been called");
 
-                return Ok(new AlbumsDTO
-                {
-                    Owned_Albums = dbResponse
-                });
+                //return Ok(new AlbumsDTO
+                //{
+                //    Owned_Albums = dbResponse
+                //});
+
+                return Ok();
             }
             catch (Exception err)
             {
@@ -53,12 +52,15 @@ namespace VinylAppApi.Controllers
         [HttpGet("{userId}")]
         public async Task<IActionResult> Get(string userId)
         {
-            var dbResponse = await _dbAccess.GetAlbumByUserId(userId);
+            // var dbResponse = await _dbAccess.GetAlbumByUserId(userId);
 
-            return Ok(new AlbumsDTO
-            {
-                Owned_Albums = dbResponse
-            });
+            //return Ok(new AlbumsDTO
+            //{
+            //    Owned_Albums = dbResponse
+            //});
+
+            return Ok();
+
         }
 
         [HttpGet("{userId}/{id}")]
@@ -66,11 +68,11 @@ namespace VinylAppApi.Controllers
         {
             try
             {
-                var response = await _dbAccess.GetAlbumModelByIdAsync(userId, id);
+                // var response = await _dbAccess.GetAlbumModelByIdAsync(userId, id);
 
                 _logger.LogDebug("OwnedAlbums has been called");
 
-                return Ok(response);
+                return Ok();
             }
             catch (Exception err)
             {
@@ -86,7 +88,7 @@ namespace VinylAppApi.Controllers
         {
             try
             {
-                await _dbAccess.PostAlbumAsync(userInput);
+                //await _dbAccess.PostAlbumAsync(userInput);
                 return Ok();
 
             }
@@ -103,7 +105,7 @@ namespace VinylAppApi.Controllers
         {
             try
             {
-                await _dbAccess.UpdateAlbumAsync(userId, id, userInput);
+                //await _dbAccess.UpdateAlbumAsync(userId, id, userInput);
 
                 return Ok();
             }
@@ -131,7 +133,7 @@ namespace VinylAppApi.Controllers
             {
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
-                await _dbAccess.DeleteAlbumByIdAsync(localUser.UserId, id);
+                //await _dbAccess.DeleteAlbumByIdAsync(localUser.UserId, id);
                 return Ok();
             }
             catch(Exception e)

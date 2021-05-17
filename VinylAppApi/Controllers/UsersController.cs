@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.Authorization.AuthorizationManager;
-using VinylAppApi.DataAccess.DbManager;
-using VinylAppApi.Shared.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Entities;
+using VinylAppApi.Domain.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Repository;
+using VinylAppApi.Domain.Services.UserService;
 using VinylAppApi.Helpers;
-using VinylAppApi.DataAccess.Repository;
-using VinylAppApi.DataAccess.Entities;
 
 namespace VinylAppApi.Controllers
 {
@@ -18,23 +16,20 @@ namespace VinylAppApi.Controllers
     public class UsersController : Controller
     {
         private ILogger<UsersController> _logger;
-        private IAuthService _authService;
         private IUserTokenHelper _helper;
-        private readonly IDbUserManager _userManager;
-        private readonly IMongoRepo<User> _users;
+        private readonly IMongoRepo<UserModel> _users;
+        private readonly IUserService _userService;
 
         public UsersController(
             ILogger<UsersController> logger,
-            IAuthService authService,
-            IDbUserManager userManager,
             IUserTokenHelper helper,
-            IMongoRepo<User> users)
+            IMongoRepo<UserModel> users,
+            IUserService userService)
         {
             _logger = logger;
-            _authService = authService;
-            _userManager = userManager;
             _helper = helper;
             _users = users;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -52,23 +47,22 @@ namespace VinylAppApi.Controllers
             {
                 _logger.LogError($"Error getting user: {err}");
                 return StatusCode(500);
-            }
-            
+            }   
         }
 
         [AllowAnonymous]
         [HttpPost("new")]
-        public async Task<IActionResult> CreateNewUser([FromBody] NewUserModelDTO user)
+        public async Task<IActionResult> CreateNewUser([FromBody] UserModelDTO user)
         {
             try
             {
-                var newUser = await _userManager.CreateUser(user);
-
-                return Ok(new UserInfoModelDTO
+                if(!string.IsNullOrEmpty(user.UserName) || !string.IsNullOrEmpty(user.UserSecret))
                 {
-                    UserName = newUser.UserName,
-                    UserId = newUser.Id
-                });
+                   var finalizedNewUser = await _userService.CreateNewUser(user, _users);
+                   return Ok(finalizedNewUser);
+                }
+
+                return BadRequest();
             }
             catch(Exception err)
             {

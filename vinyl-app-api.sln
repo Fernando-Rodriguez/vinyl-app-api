@@ -1,15 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinylAppApi.Shared", "VinylAppApi.Shared\VinylAppApi.Shared.csproj", "{260F9DBC-BD16-4907-B8A8-D3B09DD597C7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinylAppApi", "VinylAppApi\VinylAppApi.csproj", "{2ACE4A41-8C8E-4185-8BFE-3257AA5DCD8A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinylAppApi.Authorization", "VinylAppApi.Authorization\VinylAppApi.Authorization.csproj", "{81DB4722-92D3-4A77-B9C7-A36C960A12B4}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinylAppApi.SpotifyHandler", "VinylAppApi.SpotifyHandler\VinylAppApi.SpotifyHandler.csproj", "{35E8125F-0FC6-4098-8AEF-D8E7111119D6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VinylAppApi.DataAccess", "VinylAppApi.DataAccess\VinylAppApi.DataAccess.csproj", "{1545C51B-4963-4E02-BF64-B9D63633E836}"
+Project("{9344BDBB-3E7F-41FC-A0DD-8665D75EE146}") = "VinylAppApi.Domain", "VinylAppApi.Domain\VinylAppApi.Domain.csproj", "{5DA7D457-1C6B-4CF8-8E57-B76A31C7F5B0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,25 +11,13 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{260F9DBC-BD16-4907-B8A8-D3B09DD597C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{260F9DBC-BD16-4907-B8A8-D3B09DD597C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{260F9DBC-BD16-4907-B8A8-D3B09DD597C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{260F9DBC-BD16-4907-B8A8-D3B09DD597C7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2ACE4A41-8C8E-4185-8BFE-3257AA5DCD8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{2ACE4A41-8C8E-4185-8BFE-3257AA5DCD8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2ACE4A41-8C8E-4185-8BFE-3257AA5DCD8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2ACE4A41-8C8E-4185-8BFE-3257AA5DCD8A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{81DB4722-92D3-4A77-B9C7-A36C960A12B4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81DB4722-92D3-4A77-B9C7-A36C960A12B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81DB4722-92D3-4A77-B9C7-A36C960A12B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81DB4722-92D3-4A77-B9C7-A36C960A12B4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{35E8125F-0FC6-4098-8AEF-D8E7111119D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{35E8125F-0FC6-4098-8AEF-D8E7111119D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{35E8125F-0FC6-4098-8AEF-D8E7111119D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{35E8125F-0FC6-4098-8AEF-D8E7111119D6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1545C51B-4963-4E02-BF64-B9D63633E836}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1545C51B-4963-4E02-BF64-B9D63633E836}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1545C51B-4963-4E02-BF64-B9D63633E836}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1545C51B-4963-4E02-BF64-B9D63633E836}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DA7D457-1C6B-4CF8-8E57-B76A31C7F5B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DA7D457-1C6B-4CF8-8E57-B76A31C7F5B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DA7D457-1C6B-4CF8-8E57-B76A31C7F5B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DA7D457-1C6B-4CF8-8E57-B76A31C7F5B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
