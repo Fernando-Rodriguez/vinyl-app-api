@@ -5,7 +5,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace VinylAppApi.Domain.Entities
 {
-    [BsonCollection("albumss")]
+    [BsonCollection("albums")]
     public class AlbumModel : Document
     {
         [BsonElement("user")]

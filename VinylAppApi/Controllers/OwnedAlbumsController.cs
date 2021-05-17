@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.Domain.Entities;
 using VinylAppApi.Domain.Models.UserInterfacingModels;
-using VinylAppApi.Domain.Repository;
+using VinylAppApi.Domain.Repository.UnitOfWork;
 using VinylAppApi.Domain.Services.AlbumService;
 using VinylAppApi.Helpers;
 
@@ -17,22 +16,19 @@ namespace VinylAppApi.Controllers
     {
         private readonly ILogger<OwnedAlbumsController> _logger;
         private IUserTokenHelper _helper;
-        private readonly IMongoRepo<AlbumModel> _albums;
-        private readonly IMongoRepo<UserModel> _users;
         private readonly IAlbumService _albumService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public OwnedAlbumsController(
             ILogger<OwnedAlbumsController> logger,
             IUserTokenHelper helper,
-            IMongoRepo<AlbumModel> albums,
-            IMongoRepo<UserModel> users,
-            IAlbumService albumService)
+            IAlbumService albumService,
+            IUnitOfWork unitOfWork)
         {
             _logger = logger;
             _helper = helper;
-            _albums = albums;
-            _users = users;
             _albumService = albumService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -43,7 +39,7 @@ namespace VinylAppApi.Controllers
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
 
-                var dbRes = await _albums.FilterByAsync(album => album.User == localUser.UserName);
+                var dbRes = await _unitOfWork.Albums.FilterByAsync(filter => filter.User == localUser.UserName);
                 
                 _logger.LogDebug("OwnedAlbums has been called");
 
@@ -67,7 +63,7 @@ namespace VinylAppApi.Controllers
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
 
-                var resDb = await _albums.FindByIdAsync(id);
+                var resDb = await _unitOfWork.Albums.FindByIdAsync(id);
 
                 _logger.LogDebug("OwnedAlbums has been called");
 
@@ -95,7 +91,7 @@ namespace VinylAppApi.Controllers
 
             try
             {
-                await _albumService.AddNewAlbumAsync(userInput, _albums);
+                await _albumService.AddNewAlbumAsync(userInput, _unitOfWork);
                 return Ok();
             }
             catch (Exception err)
@@ -119,13 +115,13 @@ namespace VinylAppApi.Controllers
 
             try
             {
-                var albumToUpdate = await _albums.FindByIdAsync(userInput.Id);
+                var albumToUpdate = await _unitOfWork.Albums.FindByIdAsync(userInput.Id);
 
                 albumToUpdate.Album = userInput.Album;
                 albumToUpdate.Artist = userInput.Artist;
                 albumToUpdate.Rating = userInput.Rating;
 
-                await _albums.ReplaceOneAsync(albumToUpdate);
+                await _unitOfWork.Albums.ReplaceOneAsync(albumToUpdate);
 
                 return Ok();
             }
@@ -156,9 +152,9 @@ namespace VinylAppApi.Controllers
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
 
-                var albumToDelete = await _albums.FindOneAsync(album => album.Id.ToString() == id && album.User == localUser.UserName);
+                var albumToDelete = await _unitOfWork.Albums.FindOneAsync(album => album.Id.ToString() == id && album.User == localUser.UserName);
 
-                await _albums.DeleteOneAsync(album => album == albumToDelete);
+                await _unitOfWork.Albums.DeleteOneAsync(album => album == albumToDelete);
 
                 return Ok();
             }

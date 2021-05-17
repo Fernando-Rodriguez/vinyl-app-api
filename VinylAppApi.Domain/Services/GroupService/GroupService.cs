@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using VinylAppApi.Domain.Entities;
 using VinylAppApi.Domain.Repository;
 using VinylAppApi.Domain.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Repository.UnitOfWork;
 
 namespace VinylAppApi.Domain.Services.GroupService
 {
@@ -17,13 +18,13 @@ namespace VinylAppApi.Domain.Services.GroupService
             _logger = logger;
         }
 
-        public async Task<List<JoinedGroupsDTO>> RetrieveGroups(string currentUserId, IMongoRepo<GroupModel> userGroup, IMongoRepo<AlbumModel> albums)
+        public async Task<List<JoinedGroupsDTO>> RetrieveGroups(string currentUserId, IUnitOfWork unitOfWork)
         {
             var listOfGroupAlbums = new List<JoinedGroupsDTO>();
 
             _logger.LogDebug("Retrieving group data.");
 
-            var listOfUserGroups = await userGroup.FilterByAsync(group => group.Users.Contains(currentUserId));
+            var listOfUserGroups = await unitOfWork.Groups.FilterByAsync(group => group.Users.Contains(currentUserId));
 
             foreach (var group in listOfUserGroups)
             {
@@ -36,8 +37,9 @@ namespace VinylAppApi.Domain.Services.GroupService
                         // It only makes sense to send the albums that the
                         // user doesn't have, otherwise, they would recieve
                         // a repeated list of data, which wouldn't be useful.
-                        var userAlbums = await albums.FindByIdAsync(user);
-                        listOfUserAblums.Add(userAlbums);
+                        var specificUser = await unitOfWork.Users.FindByIdAsync(user);
+                        var userAlbums = await unitOfWork.Albums.FilterByAsync(filter => filter.User == specificUser.UserName);
+                        listOfUserAblums.AddRange(userAlbums);
                     }
                 }
 

@@ -15,5 +15,7 @@ namespace VinylAppApi.Domain.Entities
         ObjectId Id { get; set; }
 
         DateTime CreatedAt { get; }
+
+        public string IdString { get; }
     }
 }

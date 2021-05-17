@@ -1,6 +1,6 @@
 ﻿namespace VinylAppApi.Domain.Models.UserInterfacingModels
 {
-    public class UserInfoModelDTO
+    public class UserDTO
     { 
         public string UserName { get; set; }
         public string UserId { get; set; }

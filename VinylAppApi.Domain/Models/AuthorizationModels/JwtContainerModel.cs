@@ -2,8 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.Extensions.Configuration;
 
-
-namespace VinylAppApi.Shared.Models.AuthorizationModels
+namespace VinylAppApi.Domain.Models.AuthorizationModels
 {
     public class JwtContainerModel : IAuthContainerModel
     {

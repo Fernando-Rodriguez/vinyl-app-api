@@ -5,7 +5,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using VinylAppApi.Shared.Models.AuthorizationModels;
+using VinylAppApi.Domain.Models.AuthorizationModels;
 
 namespace VinylAppApi.Domain.Services.AuthorizationService
 {

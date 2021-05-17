@@ -3,11 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.Domain.Entities;
-using VinylAppApi.Domain.Repository;
+using VinylAppApi.Domain.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Repository.UnitOfWork;
 using VinylAppApi.Domain.Services.UserService;
 using VinylAppApi.Helpers;
-using VinylAppApi.Domain.Models.UserInterfacingModels;
 
 namespace VinylAppApi.Controllers
 {
@@ -17,15 +16,17 @@ namespace VinylAppApi.Controllers
     {
         private readonly IUserTokenHelper _userHelper;
         private readonly ILogger<PasswordController> _logger;
-        private readonly IMongoRepo<UserModel> _users;
         private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public PasswordController(
             ILogger<PasswordController> logger,
-            IUserTokenHelper userHelper)
+            IUserTokenHelper userHelper,
+            IUnitOfWork unitOfWork)
         {
             _logger = logger;
             _userHelper = userHelper;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -35,13 +36,13 @@ namespace VinylAppApi.Controllers
             {
                 var myContext = HttpContext;
                 var localUser = await _userHelper.RetrieveUser(myContext);
-                var userReqChange = await _users.FindByIdAsync(localUser.UserId);
+                var userReqChange = await _unitOfWork.Users.FindByIdAsync(localUser.UserId);
 
-                await _userService.UpdatePassword(new UserModelDTO
+                await _userService.UpdatePassword(new LoginDTO
                 {
                     UserName = userReqChange.UserName,
                     UserSecret = userReqChange.UserSecret
-                }, newPass.UpdatePass, _users);
+                }, newPass.UpdatePass, _unitOfWork);
 
                 _logger.LogDebug("user password updated.");
                 return Ok();

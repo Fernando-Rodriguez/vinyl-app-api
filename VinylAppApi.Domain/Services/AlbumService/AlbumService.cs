@@ -4,6 +4,7 @@ using VinylAppApi.Domain.Services.AlbumService.DataCoordinationManager;
 using VinylAppApi.Domain.Entities;
 using VinylAppApi.Domain.Repository;
 using VinylAppApi.Domain.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Repository.UnitOfWork;
 
 namespace VinylAppApi.Domain.Services.AlbumService
 {
@@ -18,9 +19,10 @@ namespace VinylAppApi.Domain.Services.AlbumService
             _matchUpData = matchUpData;
         }
 
-        public async Task AddNewAlbumAsync(AlbumUpdateModelDTO userInputAlbum, IMongoRepo<AlbumModel> _albums)
+        public async Task AddNewAlbumAsync(AlbumUpdateModelDTO userInputAlbum, IUnitOfWork unitOfWork)
         {
-            var checkIfAblumInDB = await _albums
+            var checkIfAblumInDB = await unitOfWork
+                .Albums
                 .FindOneAsync(album => album.Album == userInputAlbum.Album
                     && album.User == userInputAlbum.User);
 
@@ -29,7 +31,7 @@ namespace VinylAppApi.Domain.Services.AlbumService
                 try
                 {
                     var matchedDataAlbum = await _matchUpData.DataMatcher(userInputAlbum);
-                    await _albums.InsertOneAsync(matchedDataAlbum);
+                    await unitOfWork.Albums.InsertOneAsync(matchedDataAlbum);
                 }
                 catch
                 {

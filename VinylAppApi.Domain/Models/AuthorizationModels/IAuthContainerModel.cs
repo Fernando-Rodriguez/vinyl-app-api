@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace VinylAppApi.Shared.Models.AuthorizationModels
+namespace VinylAppApi.Domain.Models.AuthorizationModels
 {
     public interface IAuthContainerModel
     {

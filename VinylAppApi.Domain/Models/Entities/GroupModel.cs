@@ -13,6 +13,6 @@ namespace VinylAppApi.Domain.Entities
 
         [BsonElement("users")]
         [Required]
-        public List<string> Users { get; set; }
+        public List<string> Users { get; set; } = new List<string>();
     }
 }

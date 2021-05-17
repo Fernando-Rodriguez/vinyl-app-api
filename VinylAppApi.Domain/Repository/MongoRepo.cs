@@ -36,12 +36,12 @@ namespace VinylAppApi.Domain.Repository
             return collectionName.CollectionName;
         }
 
-        public IQueryable<TDocument> AsQueryable()
+        public virtual IQueryable<TDocument> AsQueryable()
         {
             return _collection.AsQueryable();
         }
 
-        public async Task DeleteByIdAsync(string id)
+        public virtual async Task DeleteByIdAsync(string id)
         {
             var tempObId = new ObjectId(id);
             await _collection
@@ -50,23 +50,23 @@ namespace VinylAppApi.Domain.Repository
                 );
         }
 
-        public async Task DeleteManyAsync(Expression<Func<TDocument, bool>> filter)
+        public virtual async Task DeleteManyAsync(Expression<Func<TDocument, bool>> filter)
         {
             await _collection.DeleteManyAsync<TDocument>(filter);
         }
 
-        public async Task DeleteOneAsync(Expression<Func<TDocument, bool>> filter)
+        public virtual async Task DeleteOneAsync(Expression<Func<TDocument, bool>> filter)
         {
             await _collection.DeleteOneAsync<TDocument>(filter);
         }
 
-        public async Task<List<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filter)
+        public virtual async Task<List<TDocument>> FilterByAsync(Expression<Func<TDocument, bool>> filter)
         {
-            var result = await _collection.FindAsync(filter);
+            var result = await _collection.FindAsync<TDocument>(filter);
             return result.ToList();
         }
 
-        public async Task<TDocument> FindByIdAsync(string id)
+        public virtual async Task<TDocument> FindByIdAsync(string id)
         {
             var tempObId = new ObjectId(id);
             var result = await _collection
@@ -76,23 +76,23 @@ namespace VinylAppApi.Domain.Repository
             return result.FirstOrDefault();
         }
 
-        public async Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filter)
+        public virtual async Task<TDocument> FindOneAsync(Expression<Func<TDocument, bool>> filter)
         {
             var result = await _collection.FindAsync<TDocument>(filter);
             return result.FirstOrDefault();
         }
 
-        public async Task InsertManyAsync(ICollection<TDocument> documents)
+        public virtual async Task InsertManyAsync(ICollection<TDocument> documents)
         {
             await _collection.InsertManyAsync(documents);
         }
 
-        public async Task InsertOneAsync(TDocument document)
+        public virtual async Task InsertOneAsync(TDocument document)
         {
             await _collection.InsertOneAsync(document);
         }
 
-        public async Task ReplaceOneAsync(TDocument document)
+        public virtual async Task ReplaceOneAsync(TDocument document)
         {
             await _collection
                 .ReplaceOneAsync(

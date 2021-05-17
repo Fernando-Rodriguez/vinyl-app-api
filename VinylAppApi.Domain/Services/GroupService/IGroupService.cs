@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using VinylAppApi.Domain.Entities;
-using VinylAppApi.Domain.Repository;
 using VinylAppApi.Domain.Models.UserInterfacingModels;
+using VinylAppApi.Domain.Repository.UnitOfWork;
 
 namespace VinylAppApi.Domain.Services.GroupService
 {
     public interface IGroupService
     {
-        Task<List<JoinedGroupsDTO>> RetrieveGroups(string currentUserId, IMongoRepo<GroupModel> userGroup, IMongoRepo<AlbumModel> albums);
+        Task<List<JoinedGroupsDTO>> RetrieveGroups(string currentUserId, IUnitOfWork unitOfWork);
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Security.Claims;
-using VinylAppApi.Shared.Models.AuthorizationModels;
+using VinylAppApi.Domain.Models.AuthorizationModels;
 
 namespace VinylAppApi.Domain.Services.AuthorizationService
 {

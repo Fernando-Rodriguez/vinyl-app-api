@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.Domain.Entities;
 using VinylAppApi.Domain.Models.UserInterfacingModels;
-using VinylAppApi.Domain.Repository;
+using VinylAppApi.Domain.Repository.UnitOfWork;
 using VinylAppApi.Domain.Services.UserService;
 using VinylAppApi.Helpers;
 
@@ -15,21 +14,21 @@ namespace VinylAppApi.Controllers
     [Authorize]
     public class UsersController : Controller
     {
-        private ILogger<UsersController> _logger;
-        private IUserTokenHelper _helper;
-        private readonly IMongoRepo<UserModel> _users;
+        private readonly ILogger<UsersController> _logger;
+        private readonly IUserTokenHelper _helper;
         private readonly IUserService _userService;
+        private readonly IUnitOfWork _unitOfWork;
 
         public UsersController(
             ILogger<UsersController> logger,
             IUserTokenHelper helper,
-            IMongoRepo<UserModel> users,
-            IUserService userService)
+            IUserService userService,
+            IUnitOfWork unitOfWork)
         {
             _logger = logger;
             _helper = helper;
-            _users = users;
             _userService = userService;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -51,13 +50,13 @@ namespace VinylAppApi.Controllers
 
         [AllowAnonymous]
         [HttpPost("new")]
-        public async Task<IActionResult> CreateNewUser([FromBody] UserModelDTO user)
+        public async Task<IActionResult> CreateNewUser([FromBody] LoginDTO user)
         {
             try
             {
                 if(!string.IsNullOrEmpty(user.UserName) || !string.IsNullOrEmpty(user.UserSecret))
                 {
-                   var finalizedNewUser = await _userService.CreateNewUser(user, _users);
+                   var finalizedNewUser = await _userService.CreateNewUser(user, _unitOfWork);
                    return Ok(finalizedNewUser);
                 }
 

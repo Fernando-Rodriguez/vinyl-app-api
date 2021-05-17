@@ -6,6 +6,6 @@ namespace VinylAppApi.Helpers
 {
     public interface IUserTokenHelper
     {
-        Task<UserInfoModelDTO> RetrieveUser(HttpContext context);
+        Task<UserDTO> RetrieveUser(HttpContext context);
     }
 }
