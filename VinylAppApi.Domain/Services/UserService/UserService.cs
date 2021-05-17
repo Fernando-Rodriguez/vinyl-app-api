@@ -62,7 +62,7 @@ namespace VinylAppApi.Domain.Services.UserService
                 };
             }
 
-            return new UserDTO { };
+            throw new ArgumentException("There is already an existing user with that name");
         }
 
         public async Task<bool> VerifyUser(LoginDTO user, IUnitOfWork unitOfWork)
@@ -131,7 +131,7 @@ namespace VinylAppApi.Domain.Services.UserService
                 return new string[] { userSpecificToken, userSpecificRefresh };
             }
 
-            return new string[] { "", "" };
+            throw new Exception("Usename/Password unable to be verified.");
         }
 
         public async Task<string> GenerateTokenWithRefreshToken(string refreshToken, IUnitOfWork unitOfWork)
@@ -154,7 +154,7 @@ namespace VinylAppApi.Domain.Services.UserService
                 return userSpecificToken;
             }
 
-            return "login fail";
+            throw new Exception("Refresh token not found.");
         }
     }
 }

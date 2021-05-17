@@ -36,7 +36,7 @@ namespace VinylAppApi.Controllers
             {
                 return BadRequest();
             }
-            else
+            try
             {
                 var tokenResponse = await _userService
                     .GenerateTokenWithUserNameAndPassword(
@@ -73,25 +73,36 @@ namespace VinylAppApi.Controllers
 
                 return Ok();
             }
+            catch
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPost("refresh")]
         public async Task<IActionResult> GetTokenFromRefresh()
         {
-            var context = HttpContext;
-            var token = context.Request.Cookies.Where(name => name.Key == "_refresh").FirstOrDefault().Value;
-            var newToken = await _userService.GenerateTokenWithRefreshToken(token, _unitOfWork);
+            try
+            {
+                var context = HttpContext;
+                var token = context.Request.Cookies.Where(name => name.Key == "_refresh").FirstOrDefault().Value;
+                var newToken = await _userService.GenerateTokenWithRefreshToken(token, _unitOfWork);
 
-            Response.Cookies.Append(
-                "_bearer",
-                newToken,
-                new Microsoft.AspNetCore.Http.CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                });
+                Response.Cookies.Append(
+                    "_bearer",
+                    newToken,
+                    new Microsoft.AspNetCore.Http.CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                    });
 
-            return Ok();
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest("error with refresh.");
+            }
         }
     }
 }
