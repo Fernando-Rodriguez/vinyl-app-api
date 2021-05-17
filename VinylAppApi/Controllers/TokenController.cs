@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using VinylAppApi.Domain.Models.UserInterfacingModels;
@@ -61,6 +62,7 @@ namespace VinylAppApi.Controllers
                     {
                         HttpOnly = true,
                         Secure = true,
+                        SameSite = SameSiteMode.Lax
                     });
                 Response.Cookies.Append(
                     "_refresh",
@@ -69,6 +71,8 @@ namespace VinylAppApi.Controllers
                     {
                         HttpOnly = true,
                         Secure = true,
+                        SameSite = SameSiteMode.Lax
+
                     });
 
                 return Ok();
@@ -91,10 +95,11 @@ namespace VinylAppApi.Controllers
                 Response.Cookies.Append(
                     "_bearer",
                     newToken,
-                    new Microsoft.AspNetCore.Http.CookieOptions
+                    new CookieOptions
                     {
                         HttpOnly = true,
                         Secure = true,
+                        SameSite = SameSiteMode.Lax
                     });
 
                 return Ok();
