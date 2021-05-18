@@ -38,6 +38,15 @@ namespace VinylAppApi
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowedOrigins",
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("https://localhost:3000");
+                                  });
+            });
+
             services
                 .AddAuthentication("OAuth")
                 .AddCookie(config =>
@@ -92,6 +101,12 @@ namespace VinylAppApi
                 app.UseDeveloperExceptionPage();
             }
 
+            app.UseCors(builder =>
+                   builder.WithOrigins("https://localhost:3000")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials());
+
             var cookiePolicy = new CookiePolicyOptions
             {
                 MinimumSameSitePolicy = SameSiteMode.None,
@@ -116,9 +131,6 @@ namespace VinylAppApi
             app.UseAuthentication();
 
             app.UseAuthorization();
-
-            // Managed by cloud service.
-            // app.UseCors("AllowAnyOrigin");
 
             app.UseEndpoints(endpoints =>
             {

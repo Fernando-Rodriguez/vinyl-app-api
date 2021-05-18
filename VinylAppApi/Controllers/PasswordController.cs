@@ -22,11 +22,13 @@ namespace VinylAppApi.Controllers
         public PasswordController(
             ILogger<PasswordController> logger,
             IUserTokenHelper userHelper,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IUserService userService)
         {
             _logger = logger;
             _userHelper = userHelper;
             _unitOfWork = unitOfWork;
+            _userService = userService;
         }
 
         [HttpPost]

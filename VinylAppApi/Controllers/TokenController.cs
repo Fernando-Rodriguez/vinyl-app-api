@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -62,10 +63,13 @@ namespace VinylAppApi.Controllers
                     tokenResponse[0],
                     new CookieOptions()
                     {
-                        HttpOnly = true,
+                        HttpOnly = false,
                         Secure = true,
-                        SameSite = SameSiteMode.None
+                        SameSite = SameSiteMode.None,
+                        IsEssential = true,
+                        Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(60))
                     });
+
                 context.Response.Cookies.Append(
                     "_refresh",
                     refreshResponse[1],
@@ -74,8 +78,9 @@ namespace VinylAppApi.Controllers
                         HttpOnly = true,
                         Secure = true,
                         SameSite = SameSiteMode.None,
-                        IsEssential = true
-                    });
+                        IsEssential = true,
+                        Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromDays(1))
+                    }); ;
 
                 return Ok();
             }
