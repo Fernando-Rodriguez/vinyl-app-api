@@ -89,7 +89,8 @@ namespace VinylAppApi
             var cookiePolicy = new CookiePolicyOptions
             {
                 MinimumSameSitePolicy = SameSiteMode.None,
-                Secure = CookieSecurePolicy.Always
+                Secure = CookieSecurePolicy.Always,
+                CheckConsentNeeded = context => true,  
             };
 
             app.UseCookiePolicy(cookiePolicy);
