@@ -88,17 +88,18 @@ namespace VinylAppApi
 
             var cookiePolicy = new CookiePolicyOptions
             {
-                MinimumSameSitePolicy = SameSiteMode.Lax
+                MinimumSameSitePolicy = SameSiteMode.None,
+                Secure = CookieSecurePolicy.Always
             };
 
             app.UseCookiePolicy(cookiePolicy);
 
             app.UseSwagger();
 
-            app.UseSwaggerUI(c =>
+            app.UseSwaggerUI(config =>
             {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                c.RoutePrefix = string.Empty;
+                config.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                config.RoutePrefix = string.Empty;
             });
 
             app.UseHttpsRedirection();
@@ -109,7 +110,8 @@ namespace VinylAppApi
 
             app.UseAuthorization();
 
-            app.UseCors("AllowAnyOrigin");
+            // Managed by cloud service.
+            // app.UseCors("AllowAnyOrigin");
 
             app.UseEndpoints(endpoints =>
             {

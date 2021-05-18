@@ -39,6 +39,8 @@ namespace VinylAppApi.Controllers
             }
             try
             {
+                var context = HttpContext;
+
                 var tokenResponse = await _userService
                     .GenerateTokenWithUserNameAndPassword(
                         requestTokenInfo.UserName,
@@ -55,23 +57,23 @@ namespace VinylAppApi.Controllers
 
                 _logger.LogDebug($"user {requestTokenInfo.UserName} request token");
 
-                Response.Cookies.Append(
+                context.Response.Cookies.Append(
                     "_bearer",
                     tokenResponse[0],
-                    new Microsoft.AspNetCore.Http.CookieOptions
+                    new CookieOptions()
                     {
                         HttpOnly = true,
                         Secure = true,
-                        SameSite = SameSiteMode.Lax
+                        SameSite = SameSiteMode.None
                     });
-                Response.Cookies.Append(
+                context.Response.Cookies.Append(
                     "_refresh",
                     refreshResponse[1],
-                    new Microsoft.AspNetCore.Http.CookieOptions
+                    new CookieOptions()
                     {
                         HttpOnly = true,
                         Secure = true,
-                        SameSite = SameSiteMode.Lax
+                        SameSite = SameSiteMode.None
 
                     });
 
@@ -92,14 +94,14 @@ namespace VinylAppApi.Controllers
                 var token = context.Request.Cookies.Where(name => name.Key == "_refresh").FirstOrDefault().Value;
                 var newToken = await _userService.GenerateTokenWithRefreshToken(token, _unitOfWork);
 
-                Response.Cookies.Append(
+                context.Response.Cookies.Append(
                     "_bearer",
                     newToken,
                     new CookieOptions
                     {
                         HttpOnly = true,
                         Secure = true,
-                        SameSite = SameSiteMode.Lax
+                        SameSite = SameSiteMode.None
                     });
 
                 return Ok();
