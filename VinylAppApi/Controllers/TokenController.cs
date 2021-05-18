@@ -73,8 +73,8 @@ namespace VinylAppApi.Controllers
                     {
                         HttpOnly = true,
                         Secure = true,
-                        SameSite = SameSiteMode.None
-
+                        SameSite = SameSiteMode.None,
+                        IsEssential = true
                     });
 
                 return Ok();
@@ -101,7 +101,8 @@ namespace VinylAppApi.Controllers
                     {
                         HttpOnly = true,
                         Secure = true,
-                        SameSite = SameSiteMode.None
+                        SameSite = SameSiteMode.None,
+                        IsEssential = true
                     });
 
                 return Ok();
