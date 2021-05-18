@@ -18,11 +18,13 @@ namespace VinylAppApi.Domain.Repository.UnitOfWork
         private readonly ILogger<UnitOfWork> _logger;
 
         public UnitOfWork(
+            ILogger<UnitOfWork> logger,
             IMongoRepo<UserModel> users,
             IMongoRepo<AlbumModel> albums,
             IMongoRepo<GroupModel> groups,
             IMongoRepo<RefreshModel> refreshTokens)
         {
+            _logger = logger;
             _users = users;
             _albums = albums;
             _groups = groups;
