@@ -6,6 +6,6 @@ namespace VinylAppApi.Domain.Services.AlbumService
 {
     public interface IAlbumService
     {
-        Task AddNewAlbumAsync(AlbumUpdateModelDTO userInputAlbum, IUnitOfWork unitOfWork);
+        Task AddNewAlbumAsync(NewAlbumDTO userInputAlbum, IUnitOfWork unitOfWork);
     }
 }

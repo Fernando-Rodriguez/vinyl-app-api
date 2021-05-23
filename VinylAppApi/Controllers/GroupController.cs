@@ -9,7 +9,7 @@ using VinylAppApi.Helpers;
 
 namespace VinylAppApi.Controllers
 {
-    [Route("v1/api/[controller]")]
+    [Route("api/v1/[controller]")]
     [Authorize]
     public class GroupController : Controller
     {

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MongoDB.Bson;
 using VinylAppApi.Domain.Models.UserInterfacingModels;
 using VinylAppApi.Domain.Repository.UnitOfWork;
 using VinylAppApi.Domain.Services.AlbumService;
@@ -10,12 +11,12 @@ using VinylAppApi.Helpers;
 
 namespace VinylAppApi.Controllers
 {
-    [Route("v1/api/[controller]")]
+    [Route("api/v1/[controller]")]
     [Authorize]
     public class OwnedAlbumsController : Controller
     {
         private readonly ILogger<OwnedAlbumsController> _logger;
-        private IUserTokenHelper _helper;
+        private readonly IUserTokenHelper _helper;
         private readonly IAlbumService _albumService;
         private readonly IUnitOfWork _unitOfWork;
 
@@ -40,7 +41,6 @@ namespace VinylAppApi.Controllers
                 var localUser = await _helper.RetrieveUser(localCtx);
 
                 var dbRes = await _unitOfWork.Albums.FilterByAsync(filter => filter.User == localUser.UserName);
-                
                 _logger.LogDebug("OwnedAlbums has been called");
 
                 return Ok(new AlbumsDTO
@@ -79,10 +79,9 @@ namespace VinylAppApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] AlbumUpdateModelDTO userInput)
+        public async Task<IActionResult> Post([FromBody] NewAlbumDTO userInput)
         {
-            if (string.IsNullOrEmpty(userInput.Id)
-                || string.IsNullOrEmpty(userInput.Album)
+            if (string.IsNullOrEmpty(userInput.Album)
                 || string.IsNullOrEmpty(userInput.Artist)
                 || string.IsNullOrEmpty(userInput.User))
             {
@@ -105,6 +104,9 @@ namespace VinylAppApi.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromBody] AlbumUpdateModelDTO userInput)
         {
+            var localCtx = HttpContext;
+            var localUser = await _helper.RetrieveUser(localCtx);
+
             if (string.IsNullOrEmpty(userInput.Id)
                 || string.IsNullOrEmpty(userInput.Album)
                 || string.IsNullOrEmpty(userInput.Artist)
@@ -115,7 +117,9 @@ namespace VinylAppApi.Controllers
 
             try
             {
-                var albumToUpdate = await _unitOfWork.Albums.FindByIdAsync(userInput.Id);
+                var newId = new ObjectId(userInput.Id);
+
+                var albumToUpdate = await _unitOfWork.Albums.FindOneAsync(filter => filter.Id  == newId && filter.User == localUser.UserName);
 
                 albumToUpdate.Album = userInput.Album;
                 albumToUpdate.Artist = userInput.Artist;
@@ -142,17 +146,19 @@ namespace VinylAppApi.Controllers
         /// <param name="userId"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete()]
+        public async Task<IActionResult> Delete([FromBody] DeleteItemDTO idToDelete)
         {
-            if (string.IsNullOrEmpty(id)) return BadRequest();
+            if (string.IsNullOrEmpty(idToDelete.Id)) return BadRequest();
 
             try
             {
                 var localCtx = HttpContext;
                 var localUser = await _helper.RetrieveUser(localCtx);
 
-                var albumToDelete = await _unitOfWork.Albums.FindOneAsync(album => album.Id.ToString() == id && album.User == localUser.UserName);
+                var formattedIdToDelete = new ObjectId(idToDelete.Id);
+
+                var albumToDelete = await _unitOfWork.Albums.FindOneAsync(album => album.Id == formattedIdToDelete && album.User == localUser.UserName);
 
                 await _unitOfWork.Albums.DeleteOneAsync(album => album == albumToDelete);
 

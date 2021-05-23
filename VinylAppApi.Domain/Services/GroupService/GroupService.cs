@@ -43,7 +43,7 @@ namespace VinylAppApi.Domain.Services.GroupService
 
                 var newGroupItem = new JoinedGroupsDTO
                 {
-                    GroupId = group.Id.ToString(),
+                    GroupId = group.IdString,
                     GroupName = group.GroupName,
                     GroupAlbums = listOfUserAblums
                 };

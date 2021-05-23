@@ -44,6 +44,7 @@ namespace VinylAppApi
                                   builder =>
                                   {
                                       builder.WithOrigins("https://localhost:3000");
+                                      
                                   });
             });
 
@@ -52,6 +53,7 @@ namespace VinylAppApi
                 .AddCookie(config =>
                 {
                     config.Cookie.HttpOnly = true;
+                    config.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                     config.Cookie.Name = "vinyl_app";
                 })
                 .AddJwtBearer("OAuth", opts =>
@@ -111,7 +113,7 @@ namespace VinylAppApi
             {
                 MinimumSameSitePolicy = SameSiteMode.None,
                 Secure = CookieSecurePolicy.Always,
-                CheckConsentNeeded = context => true,  
+                CheckConsentNeeded = context => true,
             };
 
             app.UseCookiePolicy(cookiePolicy);

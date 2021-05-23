@@ -19,7 +19,7 @@ namespace VinylAppApi.Domain.Services.AlbumService.DataCoordinationManager
             _logger = logger;
         }
 
-        public async Task<AlbumModel> DataMatcher(AlbumUpdateModelDTO albumModelDTO)
+        public async Task<AlbumModel> DataMatcher(NewAlbumDTO albumModelDTO)
         {
             string searchAlbum = albumModelDTO.Album;
 
