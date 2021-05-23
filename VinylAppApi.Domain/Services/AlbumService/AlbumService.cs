@@ -1,10 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using VinylAppApi.Domain.Services.AlbumService.DataCoordinationManager;
-using VinylAppApi.Domain.Entities;
-using VinylAppApi.Domain.Repository;
 using VinylAppApi.Domain.Models.UserInterfacingModels;
 using VinylAppApi.Domain.Repository.UnitOfWork;
+using VinylAppApi.Domain.Services.AlbumService.DataCoordinationManager;
 
 namespace VinylAppApi.Domain.Services.AlbumService
 {
@@ -19,14 +18,15 @@ namespace VinylAppApi.Domain.Services.AlbumService
             _matchUpData = matchUpData;
         }
 
-        public async Task AddNewAlbumAsync(AlbumUpdateModelDTO userInputAlbum, IUnitOfWork unitOfWork)
+        public async Task AddNewAlbumAsync(NewAlbumDTO userInputAlbum, IUnitOfWork unitOfWork)
         {
             var checkIfAblumInDB = await unitOfWork
                 .Albums
-                .FindOneAsync(album => album.Album == userInputAlbum.Album
+                .FindOneAsync(
+                    album => album.Album == userInputAlbum.Album
                     && album.User == userInputAlbum.User);
 
-            if (string.IsNullOrEmpty(checkIfAblumInDB.Id.ToString()))
+            if (checkIfAblumInDB == null)
             {
                 try
                 {

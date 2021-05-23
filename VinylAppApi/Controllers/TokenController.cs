@@ -11,7 +11,7 @@ using VinylAppApi.Helpers;
 
 namespace VinylAppApi.Controllers
 {
-    [Route("v1/api/[controller]")]
+    [Route("api/v1/[controller]")]
     public class TokenController : Controller
     {
         private readonly ILogger<TokenController> _logger;
@@ -67,7 +67,7 @@ namespace VinylAppApi.Controllers
                         Secure = true,
                         SameSite = SameSiteMode.None,
                         IsEssential = true,
-                        Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(60))
+                        Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(10))
                     });
 
                 context.Response.Cookies.Append(
@@ -80,7 +80,9 @@ namespace VinylAppApi.Controllers
                         SameSite = SameSiteMode.None,
                         IsEssential = true,
                         Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromDays(1))
-                    }); ;
+                    });
+
+                
 
                 return Ok();
             }
@@ -107,7 +109,7 @@ namespace VinylAppApi.Controllers
                         HttpOnly = true,
                         Secure = true,
                         SameSite = SameSiteMode.None,
-                        IsEssential = true
+                        IsEssential = true,
                     });
 
                 return Ok();
@@ -116,6 +118,24 @@ namespace VinylAppApi.Controllers
             {
                 return BadRequest("error with refresh.");
             }
+        }
+
+        [HttpGet("logout")]
+        public void LogoutUser()
+        {
+            var context = HttpContext;
+
+            context.Response.Cookies.Append(
+                    "_bearer",
+                    "",
+                    new CookieOptions()
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        IsEssential = true,
+                        Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(-1))
+                    });
         }
     }
 }
