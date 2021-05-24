@@ -11,9 +11,10 @@ using VinylAppApi.Helpers;
 
 namespace VinylAppApi.Controllers
 {
+    [ApiController]
     [Route("api/v1/[controller]")]
     [Authorize]
-    public class OwnedAlbumsController : Controller
+    public class OwnedAlbumsController : ControllerBase
     {
         private readonly ILogger<OwnedAlbumsController> _logger;
         private readonly IUserTokenHelper _helper;

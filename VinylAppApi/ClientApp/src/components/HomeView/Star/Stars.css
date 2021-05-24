@@ -1,0 +1,13 @@
+.star-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.black {
+  color: black;
+}
+
+.white {
+  color: white;
+}
