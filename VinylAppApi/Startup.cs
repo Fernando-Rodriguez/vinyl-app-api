@@ -126,13 +126,13 @@ namespace VinylAppApi
 
             app.UseStaticFiles();
 
-            app.UseSwagger();
+            //app.UseSwagger();
 
-            app.UseSwaggerUI(config =>
-            {
-                config.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                config.RoutePrefix = "/api/info";
-            });
+            //app.UseSwaggerUI(config =>
+            //{
+            //    config.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            //    config.RoutePrefix = "/api/info";
+            //});
 
             app.UseHttpsRedirection();
 
