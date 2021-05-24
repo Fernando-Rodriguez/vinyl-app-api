@@ -10,9 +10,10 @@ using VinylAppApi.Helpers;
 
 namespace VinylAppApi.Controllers
 {
+    [ApiController]
     [Route("api/v1/[controller]")]
     [Authorize]
-    public class PasswordController : Controller
+    public class PasswordController : ControllerBase
     {
         private readonly IUserTokenHelper _userHelper;
         private readonly ILogger<PasswordController> _logger;

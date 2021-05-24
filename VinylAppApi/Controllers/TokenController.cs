@@ -11,8 +11,9 @@ using VinylAppApi.Helpers;
 
 namespace VinylAppApi.Controllers
 {
+    [ApiController]
     [Route("api/v1/[controller]")]
-    public class TokenController : Controller
+    public class TokenController : ControllerBase
     {
         private readonly ILogger<TokenController> _logger;
         private readonly IUserService _userService;
@@ -65,7 +66,7 @@ namespace VinylAppApi.Controllers
                     {
                         HttpOnly = false,
                         Secure = true,
-                        SameSite = SameSiteMode.None,
+                        SameSite = SameSiteMode.Strict,
                         IsEssential = true,
                         Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromMinutes(10))
                     });
@@ -77,7 +78,7 @@ namespace VinylAppApi.Controllers
                     {
                         HttpOnly = true,
                         Secure = true,
-                        SameSite = SameSiteMode.None,
+                        SameSite = SameSiteMode.Strict,
                         IsEssential = true,
                         Expires = DateTimeOffset.UtcNow.Add(TimeSpan.FromDays(1))
                     });
@@ -108,7 +109,7 @@ namespace VinylAppApi.Controllers
                     {
                         HttpOnly = true,
                         Secure = true,
-                        SameSite = SameSiteMode.None,
+                        SameSite = SameSiteMode.Strict,
                         IsEssential = true,
                     });
 
