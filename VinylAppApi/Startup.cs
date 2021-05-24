@@ -16,7 +16,6 @@ using VinylAppApi.Domain.Services.AlbumService;
 using VinylAppApi.Domain.Services.GroupService;
 using VinylAppApi.Domain.Repository.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
@@ -36,17 +35,18 @@ namespace VinylAppApi
             services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.Strict;
+                options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            //services.AddCors(options =>
-            //{
-            //    options.AddPolicy(name: "AllowedOrigins",
-            //                      builder =>
-            //                      {
-            //                          builder.WithOrigins(""https://localhost:36942"");
-            //                      });
-            //});
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: "AllowedOrigins",
+                                  builder =>
+                                  {
+                                      builder.WithOrigins("https://localhost:3000");
+                                      
+                                  });
+            });
 
             services
                 .AddAuthentication("OAuth")
@@ -80,13 +80,6 @@ namespace VinylAppApi
                     };
                 });
 
-            services.AddControllersWithViews();
-
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/build";
-            });
-
             services.AddSwaggerGen();
             services.AddControllers();
             services.AddScoped<ISpotifyRequest, SpotifyRequest>();
@@ -102,6 +95,7 @@ namespace VinylAppApi
             services.AddScoped<IUnitOfWork, UnitOfWork>();
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -110,7 +104,7 @@ namespace VinylAppApi
             }
 
             app.UseCors(builder =>
-                   builder.SetIsOriginAllowed((host) => true)
+                   builder.WithOrigins("https://localhost:3000")
                           .AllowAnyHeader()
                           .AllowAnyMethod()
                           .AllowCredentials());
@@ -124,14 +118,12 @@ namespace VinylAppApi
 
             app.UseCookiePolicy(cookiePolicy);
 
-            app.UseStaticFiles();
-
             app.UseSwagger();
 
             app.UseSwaggerUI(config =>
             {
                 config.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-                config.RoutePrefix = "/api/info";
+                config.RoutePrefix = string.Empty;
             });
 
             app.UseHttpsRedirection();
@@ -142,24 +134,9 @@ namespace VinylAppApi
 
             app.UseAuthorization();
 
-            app.UseSpaStaticFiles();
-
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
-            });
-
-            app.UseSpa(spa =>
-            {
-                spa.Options.SourcePath = "ClientApp";
-
-                if (env.IsDevelopment())
-                {
-                    spa.UseReactDevelopmentServer(npmScript: "start");
-                    // spa.UseProxyToSpaDevelopmentServer("http://localhost:3000");
-                }
+                endpoints.MapControllers();
             });
         }
     }

@@ -350,35 +350,9 @@ healthchecksdb
 MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
-
 .ionide/
 .DS_Store
 TestApp/appsettings.json
 VinylAppApi/appsettings.Development.json
 VinylAppApi/appsettings.json
 VinylAppApi/appsettings.json
-
-# See https://help.github.com/ignore-files/ for more about ignoring files.
-
-# dependencies
-**/node_modules
-
-# testing
-/coverage
-
-# production
-/build
-
-# misc
-**/.DS_Store
-**/.env
-**/.env.local
-**/.env.development.local
-**/.env.test.local
-**/.env.production.local
-**/.eslintcache
-
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-

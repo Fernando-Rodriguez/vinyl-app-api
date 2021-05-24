@@ -13,25 +13,13 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.9" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.0.1" />
     <PackageReference Include="System.Text.Json" Version="5.0.1" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.15" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Helpers\" />
-    <Folder Include="ClientApp\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\VinylAppApi.Domain\VinylAppApi.Domain.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="ClientApp\package.json" />
-    <Content Remove="ClientApp\package-lock.json" />
-    <Content Remove="ClientApp\public\manifest.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClientApp\package.json" />
-    <None Include="ClientApp\package-lock.json" />
-    <None Include="ClientApp\public\manifest.json" />
   </ItemGroup>
 </Project>
