@@ -63,7 +63,7 @@ namespace VinylAppApi.Controllers
                     tokenResponse[0],
                     new CookieOptions()
                     {
-                        HttpOnly = false,
+                        HttpOnly = true,
                         Secure = true,
                         SameSite = SameSiteMode.None,
                         IsEssential = true,
